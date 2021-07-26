@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/onBoardingScreens/onboarding_screen.dart';
+
+// import './screens/onBoardingScreens/onboarding_screen.dart';
+import './screens/authenticationScreens/login_screen.dart';
+import './screens/authenticationScreens/signup_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -18,7 +21,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: "Audio Entertainment",
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
+      theme: ThemeData.light().copyWith(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      routes: {
+        LoginScreen.routeName: (context) => const LoginScreen(),
+        SignupScreen.routeName: (context) => const SignupScreen(),
+      },
       home: const AudioApp(),
     );
   }
@@ -30,7 +39,7 @@ class AudioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: OnboardingScreen(),
+      body: SignupScreen(),
     );
   }
 }
