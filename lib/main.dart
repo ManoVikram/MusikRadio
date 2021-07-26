@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/onBoardingScreens/onboarding_screen.dart';
+
+// import './screens/onBoardingScreens/onboarding_screen.dart';
+import './screens/authenticationScreens/login_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -30,7 +32,7 @@ class AudioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: OnboardingScreen(),
+      body: LoginScreen(),
     );
   }
 }
