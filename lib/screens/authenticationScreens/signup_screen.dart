@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import './signup_screen.dart';
+import './login_screen.dart';
 import '../../widgets/text_field_with_icon.dart';
 
-class LoginScreen extends StatefulWidget {
-  static const String routeName = "/loginScreen";
+class SignupScreen extends StatefulWidget {
+  static const String routeName = "/signupScreen";
 
-  const LoginScreen({Key? key}) : super(key: key);
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
@@ -46,20 +45,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 Expanded(
                   flex: 4,
                   child: Image.asset(
-                    "assets/images/authenticationScreens/SignInIllustration.png",
+                    "assets/images/authenticationScreens/SignUpIllustration1.png",
                   ),
+                  // child: SvgPicture.asset("assets/images/authenticationScreens/SignUpIllustration1.svg"),
                 ),
                 Text(
-                  "Welcome Back!",
+                  "Create Account!",
                   style: TextStyle(
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontSize: 28.0,
-                    color: Colors.indigo,
+                    color: Colors.redAccent,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Expanded(
-                  flex: 6,
+                  flex: 5,
                   child: Column(
                     children: [
                       TextFieldWithIcon(
@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderColor: Colors.greenAccent,
                         iconColor: Colors.redAccent,
                       ),
-                      Align(
+                      /* Align(
                         alignment: Alignment.topRight,
                         child: Padding(
                           padding: const EdgeInsets.only(right: 20.0),
@@ -97,13 +97,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                      ), */
+                      const SizedBox(
+                        height: 20,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.indigo,
+                            primary: Colors.redAccent,
                             onPrimary: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
@@ -113,12 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 24,
                             ),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 80,
+                              horizontal: 76,
                               vertical: 13,
                             ),
                           ),
                           child: const Text(
-                            "Log In",
+                            "Sign Up",
                           ),
                         ),
                       ),
@@ -128,10 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Expanded(
                   flex: 3,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 80,
+                          horizontal: 76,
                           vertical: 5,
                         ),
                         child: ElevatedButton(
@@ -165,11 +169,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 SvgPicture.asset(
                                     "assets/icons/Google_Logo.svg"),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 const Text(
-                                  "Log In With Google",
+                                  "Sign Up With Google",
                                 ),
                               ],
                             ),
@@ -180,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            "New here?",
+                            "Already have an account?",
                             style: TextStyle(
                               fontSize: 16,
                             ),
@@ -188,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextButton(
                             onPressed: () {
                               Navigator.of(context)
-                                  .pushReplacementNamed(SignupScreen.routeName);
+                                  .pushReplacementNamed(LoginScreen.routeName);
                             },
                             style: TextButton.styleFrom(
                               textStyle: TextStyle(
@@ -199,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             child: const Text(
-                              "Create An Account",
+                              "Log In Here",
                               style: TextStyle(
                                 color: Colors.indigo,
                                 fontSize: 16,
