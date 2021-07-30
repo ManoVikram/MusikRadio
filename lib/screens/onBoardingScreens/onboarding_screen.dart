@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../authenticationScreens/signup_screen.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
@@ -50,31 +52,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ),
               if (index == 2)
-              Positioned(
-                bottom: 80,
-                // left: size.width / 2 - 80,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    elevation: 7,
-                    primary: Colors.white,
-                    onPrimary: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                Positioned(
+                  bottom: 80,
+                  // left: size.width / 2 - 80,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushReplacementNamed(SignupScreen.routeName);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 7,
+                      primary: Colors.white,
+                      onPrimary: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      textStyle: TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 26.0,
+                        vertical: 12.0,
+                      ),
                     ),
-                    textStyle: TextStyle(
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 26.0,
-                      vertical: 12.0,
-                    ),
+                    child: const Text("Take Me In"),
                   ),
-                  child: const Text("Take Me In"),
                 ),
-              ),
               Positioned(
                 bottom: 30,
                 // left: size.width / 2 - 20,

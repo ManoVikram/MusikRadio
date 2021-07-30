@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import './login_screen.dart';
+import '../otpScreen/otp_screen.dart';
 import '../../widgets/text_field_with_icon.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -104,7 +105,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // if the email ID already exists, inform the user with a snackbar in red
+
+                            Navigator.of(context)
+                                .pushNamed(OtpScreen.routeName);
+                          },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.redAccent,
                             onPrimary: Colors.white,

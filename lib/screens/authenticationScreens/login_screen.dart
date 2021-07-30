@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import './signup_screen.dart';
+import '../otpScreen/otp_screen.dart';
 import '../../widgets/text_field_with_icon.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -101,7 +102,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // if user is not verified take him to OTP Screen
+                            // else take him to Home Screen
+
+                            // if the user's email doesn't exist or entered a wrong password, inform him with a Snackbar in red
+
+                            /* Navigator.of(context)
+                                .pushNamed(OtpScreen.routeName); */
+                          },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.indigo,
                             onPrimary: Colors.white,
@@ -165,9 +174,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 SvgPicture.asset(
                                     "assets/icons/Google_Logo.svg"),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 const Text(
                                   "Log In With Google",
                                 ),
