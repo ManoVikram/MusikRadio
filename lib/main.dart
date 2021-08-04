@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import './screens/authenticationScreens/login_screen.dart';
 import './screens/authenticationScreens/signup_screen.dart';
 import './screens/otpScreen/otp_screen.dart';
+import './screens/homeScreen/home_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -29,6 +30,7 @@ class _MyAppState extends State<MyApp> {
         LoginScreen.routeName: (context) => const LoginScreen(),
         SignupScreen.routeName: (context) => const SignupScreen(),
         OtpScreen.routeName: (context) => OtpScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
       },
       home: const AudioApp(),
     );
@@ -41,7 +43,7 @@ class AudioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: LoginScreen(),
+      body: HomeScreen(),
     );
   }
 }
