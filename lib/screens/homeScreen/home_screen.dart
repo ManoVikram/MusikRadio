@@ -15,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int _categorySelected = 2;
 
   void _onTapped(int index) {
     setState(() {
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       bottom: 24,
                     ),
                     child: Text(
-                      "Hi User,",
+                      "Hi User 👋,",
                       style: TextStyle(
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontSize: 24,
@@ -118,11 +119,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const CategoryButton(
                         text: "Music",
-                        isSelected: true,
+                        emoji: "🎵",
                       ),
-                      const CategoryButton(text: "Informative"),
-                      const CategoryButton(text: "Entertainment"),
+                      const CategoryButton(
+                        text: "Stories",
+                        emoji: "📖",
+                      ),
+                      const CategoryButton(
+                        text: "Informative",
+                        emoji: "🧠",
+                      ),
+                      const CategoryButton(
+                        text: "Entertainment",
+                        emoji: "😂",
+                      ),
                     ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 10,
+                ),
+                child: Text(
+                  "For You...",
+                  style: TextStyle(
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -164,9 +189,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             flex: 3,
                             child: Container(
                               padding: const EdgeInsets.all(10.0),
-                              decoration: const BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.only(
+                              decoration: BoxDecoration(
+                                color: Colors.blueGrey[50],
+                                borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(20),
                                   bottomRight: Radius.circular(20),
                                 ),
@@ -188,7 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
