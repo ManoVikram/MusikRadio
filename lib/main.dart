@@ -6,6 +6,7 @@ import './screens/authenticationScreens/login_screen.dart';
 import './screens/authenticationScreens/signup_screen.dart';
 import './screens/otpScreen/otp_screen.dart';
 import './screens/homeScreen/home_screen.dart';
+import './screens/categoryScreen/category_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -31,6 +32,7 @@ class _MyAppState extends State<MyApp> {
         SignupScreen.routeName: (context) => const SignupScreen(),
         OtpScreen.routeName: (context) => OtpScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
+        CategoryScreen.routeName: (context) => const CategoryScreen(),
       },
       home: const AudioApp(),
     );

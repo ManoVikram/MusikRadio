@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/category_button.dart';
+import '../../widgets/audio_card.dart';
+import '../../screens/categoryScreen/category_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  int _categorySelected = 2;
 
   void _onTapped(int index) {
     setState(() {
@@ -117,21 +118,52 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     // ignore: prefer_const_literals_to_create_immutables
                     children: [
-                      const CategoryButton(
-                        text: "Music",
-                        emoji: "🎵",
-                      ),
-                      const CategoryButton(
+                      CategoryButton(
+                          text: "Music",
+                          emoji: "🎵",
+                          onTapped: () {
+                            Navigator.of(context).pushNamed(
+                              CategoryScreen.routeName,
+                              arguments: {
+                                "title": "🎵 Music",
+                              },
+                            );
+                          }),
+                      CategoryButton(
                         text: "Stories",
                         emoji: "📖",
+                        onTapped: () {
+                          Navigator.of(context).pushNamed(
+                            CategoryScreen.routeName,
+                            arguments: {
+                              "title": "📖 Stories",
+                            },
+                          );
+                        },
                       ),
-                      const CategoryButton(
+                      CategoryButton(
                         text: "Informative",
                         emoji: "🧠",
+                        onTapped: () {
+                          Navigator.of(context).pushNamed(
+                            CategoryScreen.routeName,
+                            arguments: {
+                              "title": "🧠 Informative",
+                            },
+                          );
+                        },
                       ),
-                      const CategoryButton(
+                      CategoryButton(
                         text: "Entertainment",
                         emoji: "😂",
+                        onTapped: () {
+                          Navigator.of(context).pushNamed(
+                            CategoryScreen.routeName,
+                            arguments: {
+                              "title": "😂 Entertainment",
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -155,102 +187,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 shrinkWrap: true,
                 // physics: const BouncingScrollPhysics(),
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 2,
+                itemCount: 3,
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {},
-                    child: Container(
-                      height: 280,
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 6,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              padding: const EdgeInsets.all(10.0),
-                              decoration: BoxDecoration(
-                                color: Colors.blueGrey[50],
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "TITLE",
-                                          style: TextStyle(
-                                            fontFamily:
-                                                GoogleFonts.roboto().fontFamily,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          maxLines: 2,
-                                        ),
-                                        // const Spacer(),
-                                        const SizedBox(
-                                          height: 7,
-                                        ),
-                                        Text(
-                                          "Channel Name",
-                                          style: TextStyle(
-                                              fontFamily: GoogleFonts.openSans()
-                                                  .fontFamily,
-                                              fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return const AudioCard();
                 },
               ),
             ],

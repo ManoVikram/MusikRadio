@@ -6,19 +6,21 @@ class CategoryButton extends StatelessWidget {
     Key? key,
     required this.text,
     required this.emoji,
+    required this.onTapped,
     this.isSelected = false,
   }) : super(key: key);
 
   final String text;
   final String emoji;
   final bool isSelected;
+  final void Function()? onTapped;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 10.0),
       child: TextButton(
-        onPressed: () {},
+        onPressed: onTapped,
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
