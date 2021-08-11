@@ -57,6 +57,10 @@ class AudioCard extends StatelessWidget {
                       decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: NetworkImage(""),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(
