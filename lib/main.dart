@@ -9,6 +9,7 @@ import './screens/homeScreen/home_screen.dart';
 import './screens/categoryScreen/category_screen.dart';
 import './screens/searchScreen/search_screen.dart';
 import './screens/subscriptionScreen/subscription_screen.dart';
+import './screens/accountScreen/account_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -37,6 +38,7 @@ class _MyAppState extends State<MyApp> {
         CategoryScreen.routeName: (context) => const CategoryScreen(),
         SearchScreen.routeName: (context) => SearchScreen(),
         SubscriptionScreen.routeName: (context) => const SubscriptionScreen(),
+        AccountScreen.routeName: (context) => const AccountScreen(),
       },
       home: const AudioApp(),
     );
@@ -49,7 +51,7 @@ class AudioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: SubscriptionScreen(),
+      body: AccountScreen(),
     );
   }
 }

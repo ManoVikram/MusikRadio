@@ -58,6 +58,8 @@ class AudioCard extends StatelessWidget {
                         color: Colors.red,
                         shape: BoxShape.circle,
                         image: DecorationImage(
+                          // If the user haven't set any image, show a default image here
+                          // Use eitther the AssetImage or NetworkImage for the default one
                           image: NetworkImage(""),
                           fit: BoxFit.cover,
                         ),
@@ -88,8 +90,9 @@ class AudioCard extends StatelessWidget {
                           Text(
                             "Channel Name",
                             style: TextStyle(
-                                fontFamily: GoogleFonts.openSans().fontFamily,
-                                fontSize: 16),
+                              fontFamily: GoogleFonts.openSans().fontFamily,
+                              fontSize: 16,
+                            ),
                           ),
                         ],
                       ),

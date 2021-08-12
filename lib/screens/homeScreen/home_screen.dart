@@ -192,6 +192,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const AudioCard();
                 },
               ),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
