@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../editAccountDetilsScreen/edit_account_details_screen.dart';
 import '../../widgets/audio_card.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -32,7 +33,10 @@ class AccountScreen extends StatelessWidget {
           // Show this edit button only while viewing our account
           // and not while viewing others' account
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamed(EditAccountDetilsScreen.routeName);
+            },
             icon: const Icon(
               Icons.edit,
             ),
