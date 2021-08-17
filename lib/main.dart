@@ -11,6 +11,7 @@ import './screens/searchScreen/search_screen.dart';
 import './screens/subscriptionScreen/subscription_screen.dart';
 import './screens/accountScreen/account_screen.dart';
 import './screens/editAccountDetilsScreen/edit_account_details_screen.dart';
+import './screens/audioUploadScreen/audio_upload_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -40,7 +41,9 @@ class _MyAppState extends State<MyApp> {
         SearchScreen.routeName: (context) => SearchScreen(),
         SubscriptionScreen.routeName: (context) => const SubscriptionScreen(),
         AccountScreen.routeName: (context) => const AccountScreen(),
-        EditAccountDetilsScreen.routeName: (context) => EditAccountDetilsScreen(),
+        EditAccountDetilsScreen.routeName: (context) =>
+            EditAccountDetilsScreen(),
+        AudioUploadScreen.routeName: (context) => AudioUploadScreen(),
       },
       home: const AudioApp(),
     );
@@ -52,8 +55,8 @@ class AudioApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: AccountScreen(),
+    return Scaffold(
+      body: AudioUploadScreen(),
     );
   }
 }
