@@ -55,8 +55,8 @@ class AudioApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AudioUploadScreen(),
+    return const Scaffold(
+      body: HomeScreen(),
     );
   }
 }

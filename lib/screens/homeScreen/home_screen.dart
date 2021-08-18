@@ -1,3 +1,4 @@
+import 'package:audio_entertainment_media/screens/audioUploadScreen/audio_upload_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -82,7 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(AudioUploadScreen.routeName);
+                      },
                       icon: const Icon(
                         Icons.add,
                         size: 36,

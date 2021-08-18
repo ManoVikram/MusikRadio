@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class AudioUploadScreen extends StatelessWidget {
   AudioUploadScreen({Key? key}) : super(key: key);
@@ -27,13 +28,16 @@ class AudioUploadScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   icon: const Icon(Icons.close),
                   iconSize: 30,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
+                // Show this at first, prompting the user to upload audio
                 Center(
                   child: InkWell(
                     onTap: () {},
@@ -94,6 +98,27 @@ class AudioUploadScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Show this only when the audio is uploading
+                /* Center(
+                  child: CircularPercentIndicator(
+                    radius: 120,
+                    lineWidth: 12.0,
+                    animation: true,
+                    percent: 0.3,
+                    center: Text(
+                      // Change the percent based on the amount of audio size uploaded currently
+                      // Maybe display 'Done' when upload complete
+                      "30%",
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.roboto().fontFamily,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    progressColor: Colors.greenAccent[700],
+                  ),
+                ), */
                 const SizedBox(
                   height: 20,
                 ),
@@ -159,7 +184,7 @@ class AudioUploadScreen extends StatelessWidget {
                   controller: _titleController,
                   maxLength: 100,
                   autocorrect: true,
-                  autofocus: true,
+                  // autofocus: true,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
                     hintText: "Title",
@@ -191,7 +216,7 @@ class AudioUploadScreen extends StatelessWidget {
                   maxLength: 500,
                   maxLines: 10,
                   autocorrect: true,
-                  autofocus: true,
+                  // autofocus: true,
                   decoration: const InputDecoration(
                     hintText: "Description",
                     border: OutlineInputBorder(
@@ -253,7 +278,7 @@ class AudioUploadScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         icon: const Icon(Icons.done),
                         label: Text(
