@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-class AudioUploadScreen extends StatelessWidget {
+class AudioUploadScreen extends StatefulWidget {
   AudioUploadScreen({Key? key}) : super(key: key);
 
   static const routeName = "/audioUploadScreen";
 
+  @override
+  State<AudioUploadScreen> createState() => _AudioUploadScreenState();
+}
+
+class _AudioUploadScreenState extends State<AudioUploadScreen> {
   final TextEditingController _titleController = TextEditingController();
+
   final TextEditingController _descriptionController = TextEditingController();
+
+  String? categorySelected = "🧠 Knowledge";
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +183,51 @@ class AudioUploadScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blueGrey,
+                      width: 0.7,
+                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: DropdownButton<String>(
+                    value: categorySelected,
+                    onChanged: (String? category) {
+                      setState(() {
+                        categorySelected = category!;
+                      });
+                    },
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    iconSize: 36,
+                    borderRadius: BorderRadius.circular(10),
+                    isExpanded: true,
+                    underline: Container(),
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                    items: const [
+                      "🧠 Knowledge",
+                      "🎵 Music",
+                      "📖 Stories",
+                      "😂 Entertainment",
+                    ].map((String categoryValue) {
+                      return DropdownMenuItem(
+                        value: categoryValue,
+                        child: Text(categoryValue),
+                      );
+                    }).toList(),
                   ),
                 ),
                 const SizedBox(

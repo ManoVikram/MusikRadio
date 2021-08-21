@@ -31,7 +31,9 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                       icon: const Icon(Icons.arrow_back_ios_new),
                     ),
                     PopupMenuButton(
@@ -157,8 +159,9 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+                // Change the slider value according to the audio elapsed
                 Slider(
-                  value: 10,
+                  value: 18,
                   min: 0,
                   max: 100,
                   activeColor: Colors.indigo,
@@ -170,6 +173,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
+                    // Change these texts according to the lenght of the audio
                     Text("00:00"),
                     Text("01:00"),
                   ],
@@ -243,7 +247,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         Text(
                           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod ante vitae orci bibendum, a hendrerit leo pulvinar. Cras rutrum lacus ex, at pellentesque nunc convallis at. Praesent a turpis semper, pulvinar risus sed, tempus odio. Proin cursus, neque maximus imperdiet mollis, quam dui hendrerit diam, quis posuere orci neque id neque. Vivamus finibus euismod egestas. Nunc eu ligula efficitur, pulvinar dui non, rutrum velit. Ut eget justo euismod, posuere magna sed, imperdiet libero. Etiam eu convallis ipsum, quis condimentum tortor. Suspendisse potenti. Vestibulum aliquam velit in arcu accumsan porta. Fusce pretium sapien eu metus venenatis tincidunt. Fusce vestibulum massa vel efficitur efficitur. Vivamus efficitur orci nec mauris posuere, id vehicula massa consectetur. Praesent hendrerit hendrerit vestibulum.",

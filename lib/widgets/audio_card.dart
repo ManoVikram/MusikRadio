@@ -8,10 +8,13 @@ class AudioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return InkWell(
       onTap: () {},
       child: Container(
-        height: 280,
+        // height: 280,
+        height: size.height * 0.37,
         width: double.infinity,
         margin: const EdgeInsets.symmetric(
           horizontal: 10,

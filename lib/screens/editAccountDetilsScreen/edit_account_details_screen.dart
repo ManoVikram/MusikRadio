@@ -50,7 +50,7 @@ class EditAccountDetilsScreen extends StatelessWidget {
                         height: 140,
                         width: 140,
                         decoration: const BoxDecoration(
-                          color: Colors.yellow,
+                          color: Colors.orange,
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             // If the user doesn't have any image,
