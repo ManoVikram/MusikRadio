@@ -5,6 +5,7 @@ class TextFieldWithIcon extends StatelessWidget {
   const TextFieldWithIcon({
     Key? key,
     required TextEditingController textController,
+    required this.title,
     required this.isPasswordField,
     required this.borderColor,
     required this.iconColor,
@@ -12,6 +13,7 @@ class TextFieldWithIcon extends StatelessWidget {
         super(key: key);
 
   final TextEditingController _textController;
+  final String title;
   final bool isPasswordField;
   final Color borderColor;
   final Color iconColor;
@@ -27,7 +29,7 @@ class TextFieldWithIcon extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            isPasswordField ? "Password" : "EMail",
+            title,
             style: TextStyle(
               fontFamily: GoogleFonts.poppins().fontFamily,
               color: Colors.black,

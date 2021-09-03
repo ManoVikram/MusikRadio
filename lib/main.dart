@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './amplifyconfiguration.dart';
 
 // import './screens/onBoardingScreens/onboarding_screen.dart';
 import './screens/authenticationScreens/login_screen.dart';
 import './screens/authenticationScreens/signup_screen.dart';
-import './screens/otpScreen/otp_screen.dart';
+import './screens/confirmationCodeScreen/confirmation_code_screen.dart';
 import './screens/homeScreen/home_screen.dart';
 import './screens/categoryScreen/category_screen.dart';
 import './screens/searchScreen/search_screen.dart';
@@ -17,6 +18,8 @@ import './screens/accountScreen/account_screen.dart';
 import './screens/editAccountDetilsScreen/edit_account_details_screen.dart';
 import './screens/audioUploadScreen/audio_upload_screen.dart';
 import './screens/playingAudioScreen/playing_audio_screen.dart';
+
+import './models/bloc/userAuthentication/registerNewUser/register_new_user_bloc.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -49,27 +52,35 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return MaterialApp(
-      title: "Audio Entertainment",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RegisterNewUserBloc>(
+          create: (context) => RegisterNewUserBloc(),
+        ),
+      ],
+      child: MaterialApp(
+        title: "Audio Entertainment",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.light().copyWith(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        routes: {
+          LoginScreen.routeName: (context) => const LoginScreen(),
+          SignupScreen.routeName: (context) => const SignupScreen(),
+          ConfirmationCodeScreen.routeName: (context) =>
+              ConfirmationCodeScreen(),
+          HomeScreen.routeName: (context) => const HomeScreen(),
+          CategoryScreen.routeName: (context) => const CategoryScreen(),
+          SearchScreen.routeName: (context) => SearchScreen(),
+          SubscriptionScreen.routeName: (context) => const SubscriptionScreen(),
+          AccountScreen.routeName: (context) => const AccountScreen(),
+          EditAccountDetilsScreen.routeName: (context) =>
+              EditAccountDetilsScreen(),
+          AudioUploadScreen.routeName: (context) => AudioUploadScreen(),
+          PlayingAudioScreen.routeName: (context) => const PlayingAudioScreen(),
+        },
+        home: const AudioApp(),
       ),
-      routes: {
-        LoginScreen.routeName: (context) => const LoginScreen(),
-        SignupScreen.routeName: (context) => const SignupScreen(),
-        OtpScreen.routeName: (context) => OtpScreen(),
-        HomeScreen.routeName: (context) => const HomeScreen(),
-        CategoryScreen.routeName: (context) => const CategoryScreen(),
-        SearchScreen.routeName: (context) => SearchScreen(),
-        SubscriptionScreen.routeName: (context) => const SubscriptionScreen(),
-        AccountScreen.routeName: (context) => const AccountScreen(),
-        EditAccountDetilsScreen.routeName: (context) =>
-            EditAccountDetilsScreen(),
-        AudioUploadScreen.routeName: (context) => AudioUploadScreen(),
-        PlayingAudioScreen.routeName: (context) => const PlayingAudioScreen(),
-      },
-      home: const AudioApp(),
     );
   }
 }
@@ -80,7 +91,7 @@ class AudioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: HomeScreen(),
+      body: SignupScreen(),
     );
   }
 }

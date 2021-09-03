@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import './signup_screen.dart';
-import '../otpScreen/otp_screen.dart';
+// import '../confirmationCodeScreen/confirmation_code_screen.dart';
 import '../../widgets/text_field_with_icon.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -65,12 +65,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       TextFieldWithIcon(
                         textController: _emailController,
+                        title: "Email",
                         isPasswordField: false,
                         borderColor: Colors.greenAccent,
                         iconColor: Colors.redAccent,
                       ),
                       TextFieldWithIcon(
                         textController: _passwordController,
+                        title: "Password",
                         isPasswordField: true,
                         borderColor: Colors.greenAccent,
                         iconColor: Colors.redAccent,

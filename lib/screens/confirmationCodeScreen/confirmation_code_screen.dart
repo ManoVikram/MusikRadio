@@ -1,16 +1,36 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class OtpScreen extends StatelessWidget {
-  OtpScreen({Key? key}) : super(key: key);
+class ConfirmationCodeScreen extends StatelessWidget {
+  ConfirmationCodeScreen({Key? key}) : super(key: key);
 
-  static const String routeName = "/otpScreen";
+  static const String routeName = "/confirmationCodeScreen";
 
-  final TextEditingController _otpController = TextEditingController();
+  final TextEditingController _confirmationCodeController =
+      TextEditingController();
+
+  Future<void> _confirmNewUser(String? userEmail) async {
+    try {
+      SignUpResult res = await Amplify.Auth.confirmSignUp(
+        username: userEmail!,
+        confirmationCode: _confirmationCodeController.text,
+      );
+
+      /* setState(() {
+        isSignUpComplete = res.isSignUpComplete;
+      }); */
+    } on AuthException catch (error) {
+      print(error.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -39,7 +59,7 @@ class OtpScreen extends StatelessWidget {
                 vertical: 10.0,
               ),
               child: Text(
-                "Enter the confirmation code we just sent to your EMail",
+                "Enter the confirmation code we just sent to your EMail...",
                 style: TextStyle(
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontSize: 24.0,
@@ -68,14 +88,16 @@ class OtpScreen extends StatelessWidget {
                 cursorColor: Colors.indigo,
                 animationDuration: const Duration(milliseconds: 300),
                 enableActiveFill: true,
-                controller: _otpController,
+                controller: _confirmationCodeController,
               ),
             ),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24.0),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _confirmNewUser(args["email"]);
+                },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.deepOrangeAccent,
                   onPrimary: Colors.white,
