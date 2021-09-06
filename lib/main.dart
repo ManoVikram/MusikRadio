@@ -21,6 +21,7 @@ import './screens/playingAudioScreen/playing_audio_screen.dart';
 
 import './models/bloc/userAuthentication/registerNewUser/register_new_user_bloc.dart';
 import './models/bloc/userAuthentication/confirmNewUser/confirm_new_user_bloc.dart';
+import './models/bloc/userAuthentication/signInUser/sign_in_user_bloc.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -61,6 +62,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ConfirmNewUserBloc>(
           create: (context) => ConfirmNewUserBloc(),
         ),
+        BlocProvider<SignInUserBloc>(
+          create: (context) => SignInUserBloc(),
+        ),
       ],
       child: MaterialApp(
         title: "Audio Entertainment",
@@ -95,7 +99,7 @@ class AudioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: SignupScreen(),
+      body: LoginScreen(),
     );
   }
 }

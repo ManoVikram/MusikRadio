@@ -131,7 +131,7 @@ class _ConfirmationCodeScreenState extends State<ConfirmationCodeScreen> {
                       // _confirmNewUser(args["email"]);
                       confirmNewUserBloc.add(ConfirmCode(
                         username: args["username"]!,
-                        userEmail: args["email"]!,
+                        // userEmail: args["email"]!,
                         confirmationCode: _confirmationCodeController.text,
                       ));
                     },
