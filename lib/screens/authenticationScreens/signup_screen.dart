@@ -1,4 +1,3 @@
-import 'package:audio_entertainment_media/models/bloc/userAuthentication/registerNewUser/register_new_user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import './login_screen.dart';
 import '../confirmationCodeScreen/confirmation_code_screen.dart';
 import '../../widgets/text_field_with_icon.dart';
+
+import '../../models/bloc/userAuthentication/registerNewUser/register_new_user_bloc.dart';
 
 class SignupScreen extends StatefulWidget {
   static const String routeName = "/signupScreen";
@@ -18,6 +19,8 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
@@ -63,7 +66,10 @@ class _SignupScreenState extends State<SignupScreen> {
         if (state is RegisterNewUserSuccess) {
           Navigator.of(context).pushNamed(
             ConfirmationCodeScreen.routeName,
-            arguments: {"email": _emailController.text},
+            arguments: {
+              "email": _emailController.text.trim(),
+              "username": _usernameController.text.trim(),
+            },
           );
         } else if (state is RegisterNewUserFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -89,7 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 3,
                     child: Image.asset(
                       "assets/images/authenticationScreens/SignUpIllustration1.png",
                     ),
@@ -105,11 +111,29 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 5,
+                    flex: 8,
                     child: Column(
                       children: [
                         TextFieldWithIcon(
+                          textController: _usernameController,
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(left: 14.0),
+                            child: Icon(Icons.badge, color: Colors.redAccent),
+                          ),
+                          title: "Username",
+                          isPasswordField: false,
+                          borderColor: Colors.greenAccent,
+                          iconColor: Colors.redAccent,
+                        ),
+                        TextFieldWithIcon(
                           textController: _emailController,
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(left: 14.0),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.redAccent,
+                            ),
+                          ),
                           title: "Email",
                           isPasswordField: false,
                           borderColor: Colors.greenAccent,
@@ -117,6 +141,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         TextFieldWithIcon(
                           textController: _passwordController,
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(left: 14.0),
+                            child: Icon(
+                              Icons.lock,
+                              color: Colors.redAccent,
+                            ),
+                          ),
                           title: "Password",
                           isPasswordField: true,
                           borderColor: Colors.greenAccent,
@@ -155,6 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             onPressed: () {
                               registerNewUserBloc.add(
                                 RegisterNewUser(
+                                  username: _usernameController.text.trim(),
                                   userEmail: _emailController.text.trim(),
                                   userPassword: _passwordController.text.trim(),
                                 ),
@@ -195,7 +227,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 76,
-                            vertical: 5,
+                            // vertical: 5,
                           ),
                           child: ElevatedButton(
                             onPressed: () {},

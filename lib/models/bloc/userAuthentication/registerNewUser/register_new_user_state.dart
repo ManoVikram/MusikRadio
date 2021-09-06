@@ -1,9 +1,13 @@
 part of 'register_new_user_bloc.dart';
 
 class UserData {
+  final String username;
   final String userEmail;
 
-  const UserData({required this.userEmail});
+  const UserData({
+    required this.username,
+    required this.userEmail,
+  });
 }
 
 abstract class RegisterNewUserState {

@@ -65,6 +65,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       TextFieldWithIcon(
                         textController: _emailController,
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.only(left: 14.0),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.redAccent,
+                          ),
+                        ),
                         title: "Email",
                         isPasswordField: false,
                         borderColor: Colors.greenAccent,
@@ -72,6 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextFieldWithIcon(
                         textController: _passwordController,
+                        prefixIcon: const Padding(
+                      padding: EdgeInsets.only(left: 14.0),
+                      child: Icon(
+                        Icons.lock,
+                        color: Colors.redAccent,
+                      ),
+                    ),
                         title: "Password",
                         isPasswordField: true,
                         borderColor: Colors.greenAccent,

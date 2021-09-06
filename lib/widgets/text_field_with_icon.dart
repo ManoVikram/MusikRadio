@@ -6,6 +6,7 @@ class TextFieldWithIcon extends StatelessWidget {
     Key? key,
     required TextEditingController textController,
     required this.title,
+    required this.prefixIcon,
     required this.isPasswordField,
     required this.borderColor,
     required this.iconColor,
@@ -14,6 +15,7 @@ class TextFieldWithIcon extends StatelessWidget {
 
   final TextEditingController _textController;
   final String title;
+  final Widget prefixIcon;
   final bool isPasswordField;
   final Color borderColor;
   final Color iconColor;
@@ -60,21 +62,7 @@ class TextFieldWithIcon extends StatelessWidget {
                 horizontal: 14,
                 vertical: 20,
               ),
-              prefixIcon: isPasswordField
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 14.0),
-                      child: Icon(
-                        Icons.lock,
-                        color: iconColor,
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(left: 14.0),
-                      child: Icon(
-                        Icons.person,
-                        color: iconColor,
-                      ),
-                    ),
+              prefixIcon: prefixIcon,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide(

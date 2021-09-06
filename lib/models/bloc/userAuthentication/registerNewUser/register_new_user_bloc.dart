@@ -22,15 +22,13 @@ class RegisterNewUserBloc
         };
 
         SignUpResult res = await Amplify.Auth.signUp(
-          username: event.userEmail.substring(
-            0,
-            event.userEmail.indexOf("@"),
-          ),
+          username: event.username,
           password: event.userPassword,
           options: CognitoSignUpOptions(
             userAttributes: userAttributes,
           ),
         );
+        
         if (res.isSignUpComplete == true) {
           yield const RegisterNewUserSuccess();
         } else {

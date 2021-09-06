@@ -20,6 +20,7 @@ import './screens/audioUploadScreen/audio_upload_screen.dart';
 import './screens/playingAudioScreen/playing_audio_screen.dart';
 
 import './models/bloc/userAuthentication/registerNewUser/register_new_user_bloc.dart';
+import './models/bloc/userAuthentication/confirmNewUser/confirm_new_user_bloc.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -56,6 +57,9 @@ class _MyAppState extends State<MyApp> {
       providers: [
         BlocProvider<RegisterNewUserBloc>(
           create: (context) => RegisterNewUserBloc(),
+        ),
+        BlocProvider<ConfirmNewUserBloc>(
+          create: (context) => ConfirmNewUserBloc(),
         ),
       ],
       child: MaterialApp(
