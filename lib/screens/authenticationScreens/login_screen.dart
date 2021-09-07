@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './signup_screen.dart';
+import './forgot_password_screen.dart';
 import '../homeScreen/home_screen.dart';
 import '../confirmationCodeScreen/confirmation_code_screen.dart';
 import '../../widgets/text_field_with_icon.dart';
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (state is SignInUserFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error),
+              content: Text(state.error ?? "ERROR!!"),
               backgroundColor: Theme.of(context).errorColor,
             ),
           );
@@ -114,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           title: "Password",
+                          textInputAction: TextInputAction.done,
                           isPasswordField: true,
                           borderColor: Colors.greenAccent,
                           iconColor: Colors.redAccent,
@@ -123,7 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 20.0),
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(ForgotPasswordScreen.routeName);
+                              },
                               style: TextButton.styleFrom(
                                 textStyle: TextStyle(
                                   fontFamily: GoogleFonts.roboto().fontFamily,
@@ -148,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               // if user is not verified take him to OTP Screen
                               // else take him to Home Screen
+                              Amplify.Auth.signOut();
                               signInUserBloc.add(SignInUser(
                                 userEmail: _emailController.text.trim(),
                                 userPassword: _passwordController.text.trim(),

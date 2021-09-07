@@ -75,7 +75,7 @@ class _SignupScreenState extends State<SignupScreen> {
         } else if (state is RegisterNewUserFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error),
+              content: Text(state.error ?? "ERROR!!"),
               backgroundColor: Theme.of(context).errorColor,
             ),
           );
@@ -150,6 +150,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           title: "Password",
+                          textInputAction: TextInputAction.done,
                           isPasswordField: true,
                           borderColor: Colors.greenAccent,
                           iconColor: Colors.redAccent,

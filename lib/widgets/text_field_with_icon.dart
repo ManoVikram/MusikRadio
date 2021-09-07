@@ -6,6 +6,7 @@ class TextFieldWithIcon extends StatelessWidget {
     Key? key,
     required TextEditingController textController,
     required this.title,
+    this.textInputAction = TextInputAction.next,
     required this.prefixIcon,
     required this.isPasswordField,
     required this.borderColor,
@@ -15,6 +16,7 @@ class TextFieldWithIcon extends StatelessWidget {
 
   final TextEditingController _textController;
   final String title;
+  final TextInputAction textInputAction;
   final Widget prefixIcon;
   final bool isPasswordField;
   final Color borderColor;
@@ -53,8 +55,7 @@ class TextFieldWithIcon extends StatelessWidget {
             style: TextStyle(
               fontFamily: GoogleFonts.roboto().fontFamily,
             ),
-            textInputAction:
-                isPasswordField ? TextInputAction.done : TextInputAction.next,
+            textInputAction: textInputAction,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
