@@ -8,16 +8,14 @@ abstract class ConfirmNewUserEvent extends Equatable {
 }
 
 class ConfirmCode extends ConfirmNewUserEvent {
-  final String username;
   final String? userEmail;
   final String confirmationCode;
 
   const ConfirmCode({
-    required this.username,
     this.userEmail,
     required this.confirmationCode,
   });
 
   @override
-  List<Object> get props => [username, confirmationCode];
+  List<Object> get props => [confirmationCode];
 }

@@ -26,21 +26,6 @@ class _ConfirmationCodeScreenState extends State<ConfirmationCodeScreen> {
     super.dispose();
   }
 
-  /* Future<void> _confirmNewUser(String? userEmail) async {
-    try {
-      SignUpResult res = await Amplify.Auth.confirmSignUp(
-        username: userEmail!,
-        confirmationCode: _confirmationCodeController.text,
-      );
-
-      /* setState(() {
-        isSignUpComplete = res.isSignUpComplete;
-      }); */
-    } on AuthException catch (error) {
-      print(error.message);
-    }
-  } */
-
   @override
   Widget build(BuildContext context) {
     final args =
@@ -128,10 +113,8 @@ class _ConfirmationCodeScreenState extends State<ConfirmationCodeScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      // _confirmNewUser(args["email"]);
                       confirmNewUserBloc.add(ConfirmCode(
-                        username: args["username"]!,
-                        // userEmail: args["email"]!,
+                        userEmail: args["email"]!,
                         confirmationCode: _confirmationCodeController.text,
                       ));
                     },

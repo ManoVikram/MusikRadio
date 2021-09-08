@@ -18,7 +18,7 @@ class ConfirmNewUserBloc
 
       try {
         SignUpResult res = await Amplify.Auth.confirmSignUp(
-          username: event.username,
+          username: event.userEmail!,
           confirmationCode: event.confirmationCode,
         );
 

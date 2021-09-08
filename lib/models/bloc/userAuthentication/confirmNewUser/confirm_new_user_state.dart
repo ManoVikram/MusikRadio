@@ -1,11 +1,9 @@
 part of './confirm_new_user_bloc.dart';
 
 class ConfirmationUserData {
-  final String username;
   final String userEmail;
 
   const ConfirmationUserData({
-    required this.username,
     required this.userEmail,
   });
 }

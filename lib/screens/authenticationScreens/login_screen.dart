@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.of(context).pushNamed(
             ConfirmationCodeScreen.routeName,
             arguments: {
-              "username": _emailController.text.trim(),
+              "email": _emailController.text.trim(),
             },
           );
         } else if (state is SignInUserFailure) {
@@ -152,9 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              // if user is not verified take him to OTP Screen
-                              // else take him to Home Screen
-                              Amplify.Auth.signOut();
+                              // Amplify.Auth.signOut();
                               signInUserBloc.add(SignInUser(
                                 userEmail: _emailController.text.trim(),
                                 userPassword: _passwordController.text.trim(),

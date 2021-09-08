@@ -19,8 +19,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final TextEditingController _usernameController = TextEditingController();
-
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
@@ -31,31 +29,8 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _usernameController.dispose();
     super.dispose();
   }
-
-  /* Future<void> _registerNewUser() async {
-    try {
-      Map<String, String> userAttributes = {
-        "email": _emailController.text,
-      };
-
-      SignUpResult res = await Amplify.Auth.signUp(
-        username: _emailController.text,
-        password: _passwordController.text,
-        options: CognitoSignUpOptions(
-          userAttributes: userAttributes,
-        ),
-      );
-
-      /* setState(() {
-        isSignUpComplete = res.isSignUpComplete;
-      }); */
-    } on AuthException catch (error) {
-      print(error.message);
-    }
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +44,6 @@ class _SignupScreenState extends State<SignupScreen> {
             ConfirmationCodeScreen.routeName,
             arguments: {
               "email": _emailController.text.trim(),
-              "username": _usernameController.text.trim(),
             },
           );
         } else if (state is RegisterNewUserFailure) {
@@ -96,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: Image.asset(
                       "assets/images/authenticationScreens/SignUpIllustration1.png",
                     ),
@@ -112,20 +86,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 8,
+                    flex: 5,
                     child: Column(
                       children: [
-                        TextFieldWithIcon(
-                          textController: _usernameController,
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.only(left: 14.0),
-                            child: Icon(Icons.badge, color: Colors.redAccent),
-                          ),
-                          title: "Username",
-                          isPasswordField: false,
-                          borderColor: Colors.greenAccent,
-                          iconColor: Colors.redAccent,
-                        ),
                         TextFieldWithIcon(
                           textController: _emailController,
                           prefixIcon: const Padding(
@@ -155,31 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderColor: Colors.greenAccent,
                           iconColor: Colors.redAccent,
                         ),
-                        /* Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 20.0),
-                              child: TextButton(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                  textStyle: TextStyle(
-                                    fontFamily: GoogleFonts.roboto().fontFamily,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Forgot Password?",
-                                  style: TextStyle(
-                                    color: Colors.indigo,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ), */
-                        const SizedBox(
+                                                const SizedBox(
                           height: 20,
                         ),
                         Padding(
@@ -188,7 +127,6 @@ class _SignupScreenState extends State<SignupScreen> {
                             onPressed: () {
                               registerNewUserBloc.add(
                                 RegisterNewUser(
-                                  username: _usernameController.text.trim(),
                                   userEmail: _emailController.text.trim(),
                                   userPassword: _passwordController.text.trim(),
                                 ),
@@ -229,7 +167,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 76,
-                            // vertical: 5,
+                            vertical: 10,
                           ),
                           child: ElevatedButton(
                             onPressed: () {},

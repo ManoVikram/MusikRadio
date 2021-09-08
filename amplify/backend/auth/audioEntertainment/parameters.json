@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "audiostartupc33578e5_identitypool_c33578e5",
+    "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "audiosc33578e5",
-    "userPoolName": "audiostartupc33578e5_userpool_c33578e5",
+    "resourceNameTruncated": "audioe12036da2",
+    "userPoolName": "audioEntertainment",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -12,29 +12,23 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "Your verification code",
-    "emailVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your Verification Code",
+    "emailVerificationMessage": "Your Verification Code: {####}",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
         "email"
     ],
-    "aliasAttributes": [
-        "email"
-    ],
+    "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
-    "userpoolClientWriteAttributes": [
-        "email"
-    ],
-    "userpoolClientReadAttributes": [
-        "email"
-    ],
-    "userpoolClientLambdaRole": "audiosc33578e5_userpoolclient_lambda_role",
+    "userpoolClientWriteAttributes": [],
+    "userpoolClientReadAttributes": [],
+    "userpoolClientLambdaRole": "audioE12036da2_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "c33578e5",
-    "resourceName": "audiostartupc33578e5",
+    "sharedId": "12036da2",
+    "resourceName": "audioEntertainment",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -48,9 +42,16 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
-    "userPoolGroupList": [],
     "serviceName": "Cognito",
+    "usernameAttributes": [
+        "email"
+    ],
+    "useDefault": "manual",
+    "userPoolGroups": false,
+    "userPoolGroupList": [],
+    "adminQueries": false,
+    "thirdPartyAuth": false,
+    "authProviders": [],
     "usernameCaseSensitive": false,
     "dependsOn": []
 }

@@ -17,18 +17,11 @@ class RegisterNewUserBloc
       yield const RegisterNewUserInProgress();
 
       try {
-        Map<String, String> userAttributes = {
-          "email": event.userEmail,
-        };
-
         SignUpResult res = await Amplify.Auth.signUp(
-          username: event.username,
+          username: event.userEmail,
           password: event.userPassword,
-          options: CognitoSignUpOptions(
-            userAttributes: userAttributes,
-          ),
         );
-        
+
         if (res.isSignUpComplete == true) {
           yield const RegisterNewUserSuccess();
         } else {

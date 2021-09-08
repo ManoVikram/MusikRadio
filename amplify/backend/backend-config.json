@@ -1,14 +1,12 @@
 {
   "auth": {
-    "audiostartupc33578e5": {
+    "audioEntertainment": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false,
       "frontendAuthConfig": {
-        "loginMechanisms": [
-          "EMAIL"
-        ],
+        "loginMechanisms": [],
         "signupAttributes": [
           "EMAIL"
         ],

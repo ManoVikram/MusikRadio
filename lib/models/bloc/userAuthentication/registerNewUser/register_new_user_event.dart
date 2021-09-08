@@ -8,12 +8,10 @@ abstract class RegisterNewUserEvent extends Equatable {
 }
 
 class RegisterNewUser extends RegisterNewUserEvent {
-  final String username;
   final String userEmail;
   final String userPassword;
 
   const RegisterNewUser({
-    required this.username,
     required this.userEmail,
     required this.userPassword,
   });
