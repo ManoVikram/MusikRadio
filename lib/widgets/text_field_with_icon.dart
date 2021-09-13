@@ -27,7 +27,7 @@ class TextFieldWithIcon extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 28,
-        vertical: 10,
+        vertical: 5,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +47,7 @@ class TextFieldWithIcon extends StatelessWidget {
             autocorrect: false,
             controller: _textController,
             showCursor: true,
-            cursorHeight: 24,
+            cursorHeight: 22,
             cursorColor: Colors.redAccent,
             obscureText: isPasswordField ? true : false,
             textAlign: TextAlign.start,
@@ -60,8 +60,8 @@ class TextFieldWithIcon extends StatelessWidget {
               filled: true,
               fillColor: Colors.white,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 20,
+                horizontal: 10,
+                vertical: 18,
               ),
               prefixIcon: prefixIcon,
               focusedBorder: OutlineInputBorder(

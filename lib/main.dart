@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:after_layout/after_layout.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './amplifyconfiguration.dart';
 
-// import './screens/onBoardingScreens/onboarding_screen.dart';
+import './screens/onBoardingScreens/onboarding_screen.dart';
 import './screens/authenticationScreens/login_screen.dart';
 import './screens/authenticationScreens/signup_screen.dart';
 import './screens/authenticationScreens/forgot_password_screen.dart';
@@ -110,13 +112,92 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class AudioApp extends StatelessWidget {
-  const AudioApp({Key? key}) : super(key: key);
+class AudioApp extends StatefulWidget {
+  const AudioApp({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<AudioApp> createState() => _AudioAppState();
+}
+
+class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
+  SharedPreferences? _prefs;
+  bool _seen = false;
+  bool _isSignedIn = false;
+
+  Future<void> checkAlreadySeen() async {
+    _prefs = await SharedPreferences.getInstance();
+    _seen = (_prefs?.getBool("seen") ?? false);
+  }
+
+  Future<bool> _fetchSession() async {
+    try {
+      AuthSession res = await Amplify.Auth.fetchAuthSession(
+        options: CognitoSessionOptions(getAWSCredentials: true),
+      );
+
+      return res.isSignedIn;
+    } on AuthException catch (error) {
+      print(error.message);
+      return false;
+    }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) => checkAlreadySeen();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: LoginScreen(),
+    return Scaffold(
+      body: FutureBuilder(
+        future: checkAlreadySeen(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            if (_seen) {
+              return FutureBuilder(
+                future: _fetchSession(),
+                builder: (context, sessionSnapshot) {
+                  if (sessionSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (sessionSnapshot.connectionState ==
+                      ConnectionState.done) {
+                    if (sessionSnapshot.hasData &&
+                        sessionSnapshot.data == true) {
+                      return const HomeScreen();
+                    } else if (sessionSnapshot.hasData &&
+                        sessionSnapshot.data == false) {
+                      return const LoginScreen();
+                    } else {
+                      return const Center(
+                        child: Text("ERROR!"),
+                      );
+                    }
+                  } else {
+                    return const Center(
+                      child: Text("ERROR!"),
+                    );
+                  }
+                },
+              );
+            } else {
+              _prefs?.setBool("seen", true);
+              return const OnboardingScreen();
+            }
+          } else {
+            return const Center(
+              child: Text("ERROR!!"),
+            );
+          }
+        },
+      ),
     );
   }
 }
