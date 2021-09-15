@@ -14,7 +14,7 @@ class AudioCard extends StatelessWidget {
       onTap: () {},
       child: Container(
         // height: 280,
-        height: size.height * 0.37,
+        height: size.height * 0.35,
         width: double.infinity,
         margin: const EdgeInsets.symmetric(
           horizontal: 10,
@@ -28,7 +28,7 @@ class AudioCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 6,
+              flex: 7,
               child: Container(
                 decoration: const BoxDecoration(
                   color: Colors.black,
@@ -80,7 +80,7 @@ class AudioCard extends StatelessWidget {
                             "TITLE",
                             style: TextStyle(
                               fontFamily: GoogleFonts.roboto().fontFamily,
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -94,7 +94,7 @@ class AudioCard extends StatelessWidget {
                             "Channel Name",
                             style: TextStyle(
                               fontFamily: GoogleFonts.openSans().fontFamily,
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           ),
                         ],

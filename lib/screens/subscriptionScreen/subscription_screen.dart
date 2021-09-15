@@ -76,7 +76,7 @@ class SubscriptionScreen extends StatelessWidget {
                           "Channel Name",
                           style: TextStyle(
                             fontFamily: GoogleFonts.roboto().fontFamily,
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

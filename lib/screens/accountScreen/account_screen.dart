@@ -56,7 +56,7 @@ class AccountScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
-                  vertical: 20,
+                  vertical: 20.0,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -77,7 +77,7 @@ class AccountScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      width: 20,
+                      width: 16,
                     ),
                     Expanded(
                       child: Column(
@@ -89,7 +89,7 @@ class AccountScreen extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontFamily: GoogleFonts.poppins().fontFamily,
-                              fontSize: 24,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -99,7 +99,7 @@ class AccountScreen extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontFamily: GoogleFonts.roboto().fontFamily,
-                              fontSize: 18,
+                              fontSize: 16,
                               color: Colors.blueGrey,
                             ),
                           ),
@@ -128,13 +128,13 @@ class AccountScreen extends StatelessWidget {
                             ),
                           ),
                           // minimumSize: const Size(200, 40),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: Text(
                           "Follow",
                           style: TextStyle(
                             fontFamily: GoogleFonts.roboto().fontFamily,
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -163,7 +163,7 @@ class AccountScreen extends StatelessWidget {
                             TextSpan(
                               text: "Followers",
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                               ),
                             ),
                           ],

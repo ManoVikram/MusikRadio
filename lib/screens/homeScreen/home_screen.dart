@@ -103,7 +103,7 @@ class HomeScreenUI extends StatelessWidget {
                     "Hi User 👋,",
                     style: TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey,
                     ),
@@ -118,7 +118,7 @@ class HomeScreenUI extends StatelessWidget {
                     },
                     icon: const Icon(
                       Icons.add,
-                      size: 36,
+                      size: 32,
                     ),
                     color: Colors.deepOrangeAccent,
                   ),
@@ -128,13 +128,13 @@ class HomeScreenUI extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
-                vertical: 24.0,
+                vertical: 20.0,
               ),
               child: Text(
                 "Explore",
                 style: TextStyle(
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 40,
+                  fontSize: 34,
                   fontWeight: FontWeight.bold,
                   height: 0,
                 ),
@@ -211,7 +211,7 @@ class HomeScreenUI extends StatelessWidget {
                 "For You...",
                 style: TextStyle(
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 28,
+                  fontSize: 26,
                   fontWeight: FontWeight.bold,
                 ),
               ),

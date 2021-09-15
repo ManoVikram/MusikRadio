@@ -49,7 +49,7 @@ class CategoryButton extends StatelessWidget {
               text,
               style: TextStyle(
                 fontFamily: GoogleFonts.poppins().fontFamily,
-                fontSize: 20,
+                fontSize: 18,
                 color: isSelected ? Colors.white : Colors.blueGrey,
               ),
             ),
