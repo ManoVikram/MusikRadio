@@ -1,7 +1,9 @@
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +32,8 @@ import './models/bloc/userAuthentication/signInUser/sign_in_user_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/forgotPasswordEmail/forgot_password_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_new_password_bloc.dart';
 
+import './models/ModelProvider.dart';
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -46,7 +50,10 @@ class _MyAppState extends State<MyApp> {
 
   void _configureAmplify() async {
     AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
-    await Amplify.addPlugins([authPlugin]);
+    AmplifyDataStore dataStorePlugin =
+        AmplifyDataStore(modelProvider: ModelProvider.instance);
+    AmplifyAPI apiPlugin = AmplifyAPI();
+    await Amplify.addPlugins([authPlugin, dataStorePlugin, apiPlugin]);
 
     try {
       await Amplify.configure(amplifyconfig);

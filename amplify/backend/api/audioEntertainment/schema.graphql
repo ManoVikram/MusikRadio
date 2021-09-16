@@ -1,0 +1,8 @@
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  createdOn: AWSDateTime!
+  email: AWSEmail!
+  name: String
+  description: String
+  isCreator: Boolean!
+}
