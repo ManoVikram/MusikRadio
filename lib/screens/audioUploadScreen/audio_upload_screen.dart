@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class AudioUploadScreen extends StatefulWidget {
-  AudioUploadScreen({Key? key}) : super(key: key);
+  const AudioUploadScreen({Key? key}) : super(key: key);
 
   static const routeName = "/audioUploadScreen";
 
