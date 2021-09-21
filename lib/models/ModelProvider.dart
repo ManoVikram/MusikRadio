@@ -16,23 +16,47 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'Audio.dart';
+import 'Creator.dart';
 import 'User.dart';
+import 'UserAudio.dart';
+import 'UserCreator.dart';
 
+export 'Audio.dart';
+export 'Creator.dart';
 export 'User.dart';
+export 'UserAudio.dart';
+export 'UserCreator.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "da268e891ec20a36566b393c2ce5fb90";
+  String version = "9de69d798f338e4ec4182c60ddfe346a";
   @override
-  List<ModelSchema> modelSchemas = [User.schema];
+  List<ModelSchema> modelSchemas = [Audio.schema, Creator.schema, User.schema, UserAudio.schema, UserCreator.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
   
   ModelType getModelTypeByModelName(String modelName) {
     switch(modelName) {
+    case "Audio": {
+    return Audio.classType;
+    }
+    break;
+    case "Creator": {
+    return Creator.classType;
+    }
+    break;
     case "User": {
     return User.classType;
+    }
+    break;
+    case "UserAudio": {
+    return UserAudio.classType;
+    }
+    break;
+    case "UserCreator": {
+    return UserCreator.classType;
     }
     break;
     default: {

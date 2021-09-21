@@ -1,3 +1,20 @@
+type Audio @model @auth(rules: [{allow: public}]) @key(name: "byCreator", fields: ["creatorID"]) {
+  id: ID!
+  uploadedOn: AWSDateTime!
+  title: String!
+  description: String
+  likes: [UserAudio] @connection(keyName: "byAudio", fields: ["id"])
+  creatorID: ID
+  category: String!
+  listenings: Int
+}
+
+type Creator @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  followers: [UserCreator] @connection(keyName: "byCreator", fields: ["id"])
+  audioUploads: [Audio] @connection(keyName: "byCreator", fields: ["id"])
+}
+
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   createdOn: AWSDateTime!
@@ -5,4 +22,23 @@ type User @model @auth(rules: [{allow: public}]) {
   name: String
   description: String
   isCreator: Boolean!
+  following: [UserCreator] @connection(keyName: "byUser", fields: ["id"])
+  liked: [UserAudio] @connection(keyName: "byUser", fields: ["id"])
 }
+
+type UserCreator @model(queries: null) @key(name: "byCreator", fields: ["creatorID", "userID"]) @key(name: "byUser", fields: ["userID", "creatorID"]) @auth(rules: [{allow: public}, {allow: public}]) {
+  id: ID!
+  creatorID: ID!
+  userID: ID!
+  creator: Creator! @connection(fields: ["creatorID"])
+  user: User! @connection(fields: ["userID"])
+}
+
+type UserAudio @model(queries: null) @key(name: "byAudio", fields: ["audioID", "userID"]) @key(name: "byUser", fields: ["userID", "audioID"]) @auth(rules: [{allow: public}, {allow: public}]) {
+  id: ID!
+  audioID: ID!
+  userID: ID!
+  audio: Audio! @connection(fields: ["audioID"])
+  user: User! @connection(fields: ["userID"])
+}
+ 
