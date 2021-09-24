@@ -26,7 +26,6 @@ import 'package:flutter/foundation.dart';
 class Creator extends Model {
   static const classType = const _CreatorModelType();
   final String id;
-  final List<UserCreator>? _followers;
   final List<Audio>? _audioUploads;
 
   @override
@@ -37,20 +36,15 @@ class Creator extends Model {
     return id;
   }
   
-  List<UserCreator>? get followers {
-    return _followers;
-  }
-  
   List<Audio>? get audioUploads {
     return _audioUploads;
   }
   
-  const Creator._internal({required this.id, followers, audioUploads}): _followers = followers, _audioUploads = audioUploads;
+  const Creator._internal({required this.id, audioUploads}): _audioUploads = audioUploads;
   
-  factory Creator({String? id, List<UserCreator>? followers, List<Audio>? audioUploads}) {
+  factory Creator({String? id, List<Audio>? audioUploads}) {
     return Creator._internal(
       id: id == null ? UUID.getUUID() : id,
-      followers: followers != null ? List<UserCreator>.unmodifiable(followers) : followers,
       audioUploads: audioUploads != null ? List<Audio>.unmodifiable(audioUploads) : audioUploads);
   }
   
@@ -63,7 +57,6 @@ class Creator extends Model {
     if (identical(other, this)) return true;
     return other is Creator &&
       id == other.id &&
-      DeepCollectionEquality().equals(_followers, other._followers) &&
       DeepCollectionEquality().equals(_audioUploads, other._audioUploads);
   }
   
@@ -81,21 +74,14 @@ class Creator extends Model {
     return buffer.toString();
   }
   
-  Creator copyWith({String? id, List<UserCreator>? followers, List<Audio>? audioUploads}) {
+  Creator copyWith({String? id, List<Audio>? audioUploads}) {
     return Creator(
       id: id ?? this.id,
-      followers: followers ?? this.followers,
       audioUploads: audioUploads ?? this.audioUploads);
   }
   
   Creator.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _followers = json['followers'] is List
-        ? (json['followers'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UserCreator.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
       _audioUploads = json['audioUploads'] is List
         ? (json['audioUploads'] as List)
           .where((e) => e?['serializedData'] != null)
@@ -104,13 +90,10 @@ class Creator extends Model {
         : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'followers': _followers?.map((e) => e?.toJson())?.toList(), 'audioUploads': _audioUploads?.map((e) => e?.toJson())?.toList()
+    'id': id, 'audioUploads': _audioUploads?.map((e) => e?.toJson())?.toList()
   };
 
   static final QueryField ID = QueryField(fieldName: "creator.id");
-  static final QueryField FOLLOWERS = QueryField(
-    fieldName: "followers",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (UserCreator).toString()));
   static final QueryField AUDIOUPLOADS = QueryField(
     fieldName: "audioUploads",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Audio).toString()));
@@ -130,13 +113,6 @@ class Creator extends Model {
     ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
-      key: Creator.FOLLOWERS,
-      isRequired: false,
-      ofModelName: (UserCreator).toString(),
-      associatedKey: UserCreator.CREATOR
-    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
       key: Creator.AUDIOUPLOADS,

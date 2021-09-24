@@ -31,8 +31,10 @@ class User extends Model {
   final String? _name;
   final String? _description;
   final bool? _isCreator;
-  final List<UserCreator>? _following;
   final List<UserAudio>? _liked;
+  final Creator? _creator;
+  final List<String>? _following;
+  final List<String>? _followers;
 
   @override
   getInstanceType() => classType;
@@ -74,17 +76,25 @@ class User extends Model {
     }
   }
   
-  List<UserCreator>? get following {
-    return _following;
-  }
-  
   List<UserAudio>? get liked {
     return _liked;
   }
   
-  const User._internal({required this.id, required createdOn, required email, name, description, required isCreator, following, liked}): _createdOn = createdOn, _email = email, _name = name, _description = description, _isCreator = isCreator, _following = following, _liked = liked;
+  Creator? get creator {
+    return _creator;
+  }
   
-  factory User({String? id, required TemporalDateTime createdOn, required String email, String? name, String? description, required bool isCreator, List<UserCreator>? following, List<UserAudio>? liked}) {
+  List<String>? get following {
+    return _following;
+  }
+  
+  List<String>? get followers {
+    return _followers;
+  }
+  
+  const User._internal({required this.id, required createdOn, required email, name, description, required isCreator, liked, creator, following, followers}): _createdOn = createdOn, _email = email, _name = name, _description = description, _isCreator = isCreator, _liked = liked, _creator = creator, _following = following, _followers = followers;
+  
+  factory User({String? id, required TemporalDateTime createdOn, required String email, String? name, String? description, required bool isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
       createdOn: createdOn,
@@ -92,8 +102,10 @@ class User extends Model {
       name: name,
       description: description,
       isCreator: isCreator,
-      following: following != null ? List<UserCreator>.unmodifiable(following) : following,
-      liked: liked != null ? List<UserAudio>.unmodifiable(liked) : liked);
+      liked: liked != null ? List<UserAudio>.unmodifiable(liked) : liked,
+      creator: creator,
+      following: following != null ? List<String>.unmodifiable(following) : following,
+      followers: followers != null ? List<String>.unmodifiable(followers) : followers);
   }
   
   bool equals(Object other) {
@@ -110,8 +122,10 @@ class User extends Model {
       _name == other._name &&
       _description == other._description &&
       _isCreator == other._isCreator &&
+      DeepCollectionEquality().equals(_liked, other._liked) &&
+      _creator == other._creator &&
       DeepCollectionEquality().equals(_following, other._following) &&
-      DeepCollectionEquality().equals(_liked, other._liked);
+      DeepCollectionEquality().equals(_followers, other._followers);
   }
   
   @override
@@ -127,13 +141,16 @@ class User extends Model {
     buffer.write("email=" + "$_email" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("description=" + "$_description" + ", ");
-    buffer.write("isCreator=" + (_isCreator != null ? _isCreator!.toString() : "null"));
+    buffer.write("isCreator=" + (_isCreator != null ? _isCreator!.toString() : "null") + ", ");
+    buffer.write("creator=" + (_creator != null ? _creator!.toString() : "null") + ", ");
+    buffer.write("following=" + (_following != null ? _following!.toString() : "null") + ", ");
+    buffer.write("followers=" + (_followers != null ? _followers!.toString() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  User copyWith({String? id, TemporalDateTime? createdOn, String? email, String? name, String? description, bool? isCreator, List<UserCreator>? following, List<UserAudio>? liked}) {
+  User copyWith({String? id, TemporalDateTime? createdOn, String? email, String? name, String? description, bool? isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers}) {
     return User(
       id: id ?? this.id,
       createdOn: createdOn ?? this.createdOn,
@@ -141,8 +158,10 @@ class User extends Model {
       name: name ?? this.name,
       description: description ?? this.description,
       isCreator: isCreator ?? this.isCreator,
+      liked: liked ?? this.liked,
+      creator: creator ?? this.creator,
       following: following ?? this.following,
-      liked: liked ?? this.liked);
+      followers: followers ?? this.followers);
   }
   
   User.fromJson(Map<String, dynamic> json)  
@@ -152,21 +171,20 @@ class User extends Model {
       _name = json['name'],
       _description = json['description'],
       _isCreator = json['isCreator'],
-      _following = json['following'] is List
-        ? (json['following'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => UserCreator.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
       _liked = json['liked'] is List
         ? (json['liked'] as List)
           .where((e) => e?['serializedData'] != null)
           .map((e) => UserAudio.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
-        : null;
+        : null,
+      _creator = json['creator']?['serializedData'] != null
+        ? Creator.fromJson(new Map<String, dynamic>.from(json['creator']['serializedData']))
+        : null,
+      _following = json['following']?.cast<String>(),
+      _followers = json['followers']?.cast<String>();
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'createdOn': _createdOn?.format(), 'email': _email, 'name': _name, 'description': _description, 'isCreator': _isCreator, 'following': _following?.map((e) => e?.toJson())?.toList(), 'liked': _liked?.map((e) => e?.toJson())?.toList()
+    'id': id, 'createdOn': _createdOn?.format(), 'email': _email, 'name': _name, 'description': _description, 'isCreator': _isCreator, 'liked': _liked?.map((e) => e?.toJson())?.toList(), 'creator': _creator?.toJson(), 'following': _following, 'followers': _followers
   };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
@@ -175,12 +193,14 @@ class User extends Model {
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField DESCRIPTION = QueryField(fieldName: "description");
   static final QueryField ISCREATOR = QueryField(fieldName: "isCreator");
-  static final QueryField FOLLOWING = QueryField(
-    fieldName: "following",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (UserCreator).toString()));
   static final QueryField LIKED = QueryField(
     fieldName: "liked",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (UserAudio).toString()));
+  static final QueryField CREATOR = QueryField(
+    fieldName: "creator",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Creator).toString()));
+  static final QueryField FOLLOWING = QueryField(fieldName: "following");
+  static final QueryField FOLLOWERS = QueryField(fieldName: "followers");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "User";
     modelSchemaDefinition.pluralName = "Users";
@@ -229,17 +249,31 @@ class User extends Model {
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
-      key: User.FOLLOWING,
-      isRequired: false,
-      ofModelName: (UserCreator).toString(),
-      associatedKey: UserCreator.USER
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
       key: User.LIKED,
       isRequired: false,
       ofModelName: (UserAudio).toString(),
       associatedKey: UserAudio.USER
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+      key: User.CREATOR,
+      isRequired: false,
+      targetName: "userCreatorId",
+      ofModelName: (Creator).toString()
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.FOLLOWING,
+      isRequired: false,
+      isArray: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.FOLLOWERS,
+      isRequired: false,
+      isArray: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
     ));
   });
 }

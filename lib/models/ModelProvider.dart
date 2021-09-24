@@ -20,19 +20,17 @@ import 'Audio.dart';
 import 'Creator.dart';
 import 'User.dart';
 import 'UserAudio.dart';
-import 'UserCreator.dart';
 
 export 'Audio.dart';
 export 'Creator.dart';
 export 'User.dart';
 export 'UserAudio.dart';
-export 'UserCreator.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "9de69d798f338e4ec4182c60ddfe346a";
+  String version = "7b237b575669ad87c05d3f955a9c78bc";
   @override
-  List<ModelSchema> modelSchemas = [Audio.schema, Creator.schema, User.schema, UserAudio.schema, UserCreator.schema];
+  List<ModelSchema> modelSchemas = [Audio.schema, Creator.schema, User.schema, UserAudio.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
@@ -53,10 +51,6 @@ class ModelProvider implements ModelProviderInterface {
     break;
     case "UserAudio": {
     return UserAudio.classType;
-    }
-    break;
-    case "UserCreator": {
-    return UserCreator.classType;
     }
     break;
     default: {

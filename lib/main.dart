@@ -32,6 +32,7 @@ import './models/bloc/userAuthentication/confirmNewUser/confirm_new_user_bloc.da
 import './models/bloc/userAuthentication/signInUser/sign_in_user_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/forgotPasswordEmail/forgot_password_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_new_password_bloc.dart';
+import './models/bloc/uploadAudio/upload_audio_bloc.dart';
 
 import './models/ModelProvider.dart';
 
@@ -92,6 +93,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ResetNewPasswordBloc>(
           create: (context) => ResetNewPasswordBloc(),
         ),
+        BlocProvider<UploadAudioBloc>(
+          create: (context) => UploadAudioBloc(),
+        ),
       ],
       child: MaterialApp(
         title: "Audio Entertainment",
@@ -117,7 +121,7 @@ class _MyAppState extends State<MyApp> {
           AccountScreen.routeName: (context) => const AccountScreen(),
           EditAccountDetilsScreen.routeName: (context) =>
               EditAccountDetilsScreen(),
-          AudioUploadScreen.routeName: (context) => AudioUploadScreen(),
+          AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
           PlayingAudioScreen.routeName: (context) => const PlayingAudioScreen(),
         },
         home: const AudioApp(),

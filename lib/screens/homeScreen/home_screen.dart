@@ -1,3 +1,5 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,6 +111,7 @@ class HomeScreenUI extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Should be shown only to creators
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: IconButton(

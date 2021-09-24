@@ -1,6 +1,13 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+
+import '../../models/bloc/uploadAudio/upload_audio_bloc.dart';
 
 class AudioUploadScreen extends StatefulWidget {
   const AudioUploadScreen({Key? key}) : super(key: key);
@@ -16,11 +23,21 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
 
   final TextEditingController _descriptionController = TextEditingController();
 
+  final ImagePicker imagePicker = ImagePicker();
+
+  FilePickerResult? audioResult;
+  XFile? thumbnailResult;
+
   String? categorySelected = "🧠 Knowledge";
+  String? audioFileName = "Select Audio";
+  bool thumbnailSelected = false;
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+
+    final UploadAudioBloc uploadAudioBloc =
+        BlocProvider.of<UploadAudioBloc>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -48,7 +65,16 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                 // Show this at first, prompting the user to upload audio
                 Center(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () async {
+                      audioResult = await FilePicker.platform
+                          .pickFiles(type: FileType.audio);
+
+                      if (audioResult != null) {
+                        setState(() {
+                          audioFileName = audioResult?.names.single;
+                        });
+                      }
+                    },
                     child: SizedBox(
                       width: size.width * 0.6,
                       child: Row(
@@ -89,8 +115,10 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "Upload Audio",
+                                  audioFileName!,
                                   textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                   style: TextStyle(
                                     fontFamily: GoogleFonts.roboto().fontFamily,
                                     fontSize: 20.0,
@@ -131,14 +159,25 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                   height: 20,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    thumbnailResult = await imagePicker.pickImage(
+                        source: ImageSource.gallery);
+
+                    if (thumbnailResult != null) {
+                      setState(() {
+                        thumbnailSelected = true;
+                      });
+                    }
+                  },
                   child: Container(
                     height: 200,
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 20,
-                    ),
+                    padding: thumbnailSelected
+                        ? EdgeInsets.zero
+                        : const EdgeInsets.symmetric(
+                            horizontal: 30,
+                            vertical: 20,
+                          ),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(
                         Radius.circular(20),
@@ -148,41 +187,51 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                         color: Colors.blueGrey,
                       ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child:
-                              Image.asset("assets/images/UploadThumbnail.png"),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Upload Thumbnail",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[600],
+                    child: thumbnailSelected
+                        ? ClipRRect(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                            child: Image.file(
+                              File(thumbnailResult!.path),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Image.asset(
+                                    "assets/images/UploadThumbnail.png"),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Upload Thumbnail",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: GoogleFonts.roboto().fontFamily,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "Note: If No Thumbnail Is Uploaded, Default One Will Be Used",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: GoogleFonts.roboto().fontFamily,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Note: If No Thumbnail Is Uploaded, Default One Will Be Used",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
                 const SizedBox(
@@ -324,7 +373,38 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                     ),
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (audioResult == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text("Choose an audio file!"),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                          } else if (_titleController.text == "") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text("Enter audio title!"),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                          } else if (thumbnailResult == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text("Choose a thumbnail!"),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                          } else {
+                            uploadAudioBloc.add(UploadAudio(
+                              title: _titleController.text,
+                              description: _descriptionController.text,
+                              category: categorySelected!,
+                              audioResult: audioResult!,
+                              thumbnailResult: thumbnailResult!,
+                            ));
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.indigo,
                           onPrimary: Colors.white,

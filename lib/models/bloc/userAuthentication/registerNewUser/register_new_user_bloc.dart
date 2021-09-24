@@ -27,7 +27,7 @@ class RegisterNewUserBloc
 
         if (res.isSignUpComplete == true) {
           User newUser = User(
-            createdOn: TemporalDateTime(DateTime.now()),
+            createdOn: TemporalDateTime(DateTime.now().toLocal()),
             email: event.userEmail,
             isCreator: false,
           );

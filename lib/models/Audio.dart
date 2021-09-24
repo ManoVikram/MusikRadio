@@ -33,6 +33,8 @@ class Audio extends Model {
   final String? _creatorID;
   final String? _category;
   final int? _listenings;
+  final String? _audioKey;
+  final String? _thumbnailKey;
 
   @override
   getInstanceType() => classType;
@@ -82,9 +84,25 @@ class Audio extends Model {
     return _listenings;
   }
   
-  const Audio._internal({required this.id, required uploadedOn, required title, description, likes, creatorID, required category, listenings}): _uploadedOn = uploadedOn, _title = title, _description = description, _likes = likes, _creatorID = creatorID, _category = category, _listenings = listenings;
+  String get audioKey {
+    try {
+      return _audioKey!;
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+    }
+  }
   
-  factory Audio({String? id, required TemporalDateTime uploadedOn, required String title, String? description, List<UserAudio>? likes, String? creatorID, required String category, int? listenings}) {
+  String get thumbnailKey {
+    try {
+      return _thumbnailKey!;
+    } catch(e) {
+      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
+    }
+  }
+  
+  const Audio._internal({required this.id, required uploadedOn, required title, description, likes, creatorID, required category, listenings, required audioKey, required thumbnailKey}): _uploadedOn = uploadedOn, _title = title, _description = description, _likes = likes, _creatorID = creatorID, _category = category, _listenings = listenings, _audioKey = audioKey, _thumbnailKey = thumbnailKey;
+  
+  factory Audio({String? id, required TemporalDateTime uploadedOn, required String title, String? description, List<UserAudio>? likes, String? creatorID, required String category, int? listenings, required String audioKey, required String thumbnailKey}) {
     return Audio._internal(
       id: id == null ? UUID.getUUID() : id,
       uploadedOn: uploadedOn,
@@ -93,7 +111,9 @@ class Audio extends Model {
       likes: likes != null ? List<UserAudio>.unmodifiable(likes) : likes,
       creatorID: creatorID,
       category: category,
-      listenings: listenings);
+      listenings: listenings,
+      audioKey: audioKey,
+      thumbnailKey: thumbnailKey);
   }
   
   bool equals(Object other) {
@@ -111,7 +131,9 @@ class Audio extends Model {
       DeepCollectionEquality().equals(_likes, other._likes) &&
       _creatorID == other._creatorID &&
       _category == other._category &&
-      _listenings == other._listenings;
+      _listenings == other._listenings &&
+      _audioKey == other._audioKey &&
+      _thumbnailKey == other._thumbnailKey;
   }
   
   @override
@@ -128,13 +150,15 @@ class Audio extends Model {
     buffer.write("description=" + "$_description" + ", ");
     buffer.write("creatorID=" + "$_creatorID" + ", ");
     buffer.write("category=" + "$_category" + ", ");
-    buffer.write("listenings=" + (_listenings != null ? _listenings!.toString() : "null"));
+    buffer.write("listenings=" + (_listenings != null ? _listenings!.toString() : "null") + ", ");
+    buffer.write("audioKey=" + "$_audioKey" + ", ");
+    buffer.write("thumbnailKey=" + "$_thumbnailKey");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Audio copyWith({String? id, TemporalDateTime? uploadedOn, String? title, String? description, List<UserAudio>? likes, String? creatorID, String? category, int? listenings}) {
+  Audio copyWith({String? id, TemporalDateTime? uploadedOn, String? title, String? description, List<UserAudio>? likes, String? creatorID, String? category, int? listenings, String? audioKey, String? thumbnailKey}) {
     return Audio(
       id: id ?? this.id,
       uploadedOn: uploadedOn ?? this.uploadedOn,
@@ -143,7 +167,9 @@ class Audio extends Model {
       likes: likes ?? this.likes,
       creatorID: creatorID ?? this.creatorID,
       category: category ?? this.category,
-      listenings: listenings ?? this.listenings);
+      listenings: listenings ?? this.listenings,
+      audioKey: audioKey ?? this.audioKey,
+      thumbnailKey: thumbnailKey ?? this.thumbnailKey);
   }
   
   Audio.fromJson(Map<String, dynamic> json)  
@@ -159,10 +185,12 @@ class Audio extends Model {
         : null,
       _creatorID = json['creatorID'],
       _category = json['category'],
-      _listenings = json['listenings'];
+      _listenings = json['listenings'],
+      _audioKey = json['audioKey'],
+      _thumbnailKey = json['thumbnailKey'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'uploadedOn': _uploadedOn?.format(), 'title': _title, 'description': _description, 'likes': _likes?.map((e) => e?.toJson())?.toList(), 'creatorID': _creatorID, 'category': _category, 'listenings': _listenings
+    'id': id, 'uploadedOn': _uploadedOn?.format(), 'title': _title, 'description': _description, 'likes': _likes?.map((e) => e?.toJson())?.toList(), 'creatorID': _creatorID, 'category': _category, 'listenings': _listenings, 'audioKey': _audioKey, 'thumbnailKey': _thumbnailKey
   };
 
   static final QueryField ID = QueryField(fieldName: "audio.id");
@@ -175,6 +203,8 @@ class Audio extends Model {
   static final QueryField CREATORID = QueryField(fieldName: "creatorID");
   static final QueryField CATEGORY = QueryField(fieldName: "category");
   static final QueryField LISTENINGS = QueryField(fieldName: "listenings");
+  static final QueryField AUDIOKEY = QueryField(fieldName: "audioKey");
+  static final QueryField THUMBNAILKEY = QueryField(fieldName: "thumbnailKey");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Audio";
     modelSchemaDefinition.pluralName = "Audio";
@@ -233,6 +263,18 @@ class Audio extends Model {
       key: Audio.LISTENINGS,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Audio.AUDIOKEY,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Audio.THUMBNAILKEY,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
   });
 }

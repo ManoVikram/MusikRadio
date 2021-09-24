@@ -29,9 +29,9 @@ environment:
 dependencies:
   after_layout: ^1.1.0
   amplify_api: ^0.2.4
-  amplify_auth_cognito: ^0.2.2
+  amplify_auth_cognito: ^0.2.4
   amplify_datastore: ^0.2.4
-  amplify_flutter: ^0.2.2
+  amplify_flutter: ^0.2.4
   amplify_storage_s3: ^0.2.4
   auto_size_text: ^3.0.0-nullsafety.0
   bloc: ^7.1.0

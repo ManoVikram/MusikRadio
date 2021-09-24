@@ -17,5 +17,5 @@ class SignInUser extends SignInUserEvent {
   });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [userEmail, userPassword];
 }
