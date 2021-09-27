@@ -26,6 +26,7 @@ class SignInUserBloc extends Bloc<SignInUserEvent, SignInUserState> {
           yield const SignInUserFailure();
         }
       } on UserNotConfirmedException catch (error) {
+        Amplify.Auth.resendSignUpCode(username: event.userEmail);
         yield const SignInUserNotConfirmed();
       } on AuthException catch (error) {
         yield SignInUserFailure(error: error.message);

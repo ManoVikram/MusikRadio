@@ -40,7 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
     final Size size = MediaQuery.of(context).size;
 
     return BlocConsumer<RegisterNewUserBloc, RegisterNewUserState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is RegisterNewUserSuccess) {
           Navigator.of(context).pushNamed(
             ConfirmationCodeScreen.routeName,

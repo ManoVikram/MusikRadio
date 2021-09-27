@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../categoryScreen/category_screen.dart';
 import '../accountScreen/account_screen.dart';
@@ -10,6 +11,8 @@ import '../subscriptionScreen/subscription_screen.dart';
 import '../playingAudioScreen/playing_audio_screen.dart';
 import '../../widgets/category_button.dart';
 import '../../widgets/audio_card.dart';
+
+import 'package:audio_entertainment_media/models/provider/user_data.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -82,6 +85,7 @@ class HomeScreenUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserProvider = context.watch<CurrentUserData>();
     return SafeArea(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -109,20 +113,22 @@ class HomeScreenUI extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(AudioUploadScreen.routeName);
-                    },
-                    icon: const Icon(
-                      Icons.add,
-                      size: 32,
+                // Should be shown only to creators
+                if (currentUserProvider.currnetUser.isCreator)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(AudioUploadScreen.routeName);
+                      },
+                      icon: const Icon(
+                        Icons.add,
+                        size: 32,
+                      ),
+                      color: Colors.deepOrangeAccent,
                     ),
-                    color: Colors.deepOrangeAccent,
                   ),
-                ),
               ],
             ),
             Padding(

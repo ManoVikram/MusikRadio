@@ -1,9 +1,13 @@
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './amplifyconfiguration.dart';
@@ -29,6 +33,11 @@ import './models/bloc/userAuthentication/confirmNewUser/confirm_new_user_bloc.da
 import './models/bloc/userAuthentication/signInUser/sign_in_user_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/forgotPasswordEmail/forgot_password_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_new_password_bloc.dart';
+import './models/bloc/uploadAudio/upload_audio_bloc.dart';
+
+import './models/provider/user_data.dart';
+
+import './models/ModelProvider.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -46,7 +55,16 @@ class _MyAppState extends State<MyApp> {
 
   void _configureAmplify() async {
     AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
-    await Amplify.addPlugins([authPlugin]);
+    AmplifyDataStore dataStorePlugin =
+        AmplifyDataStore(modelProvider: ModelProvider.instance);
+    AmplifyAPI apiPlugin = AmplifyAPI();
+    AmplifyStorageS3 storagePlugin = AmplifyStorageS3();
+    await Amplify.addPlugins([
+      authPlugin,
+      dataStorePlugin,
+      apiPlugin,
+      storagePlugin,
+    ]);
 
     try {
       await Amplify.configure(amplifyconfig);
@@ -78,35 +96,47 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ResetNewPasswordBloc>(
           create: (context) => ResetNewPasswordBloc(),
         ),
-      ],
-      child: MaterialApp(
-        title: "Audio Entertainment",
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.light().copyWith(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+        BlocProvider<UploadAudioBloc>(
+          create: (context) => UploadAudioBloc(),
         ),
-        routes: {
-          LoginScreen.routeName: (context) => const LoginScreen(),
-          SignupScreen.routeName: (context) => const SignupScreen(),
-          ForgotPasswordScreen.routeName: (context) =>
-              const ForgotPasswordScreen(),
-          ResetNewPasswordScreen.routeName: (context) =>
-              const ResetNewPasswordScreen(),
-          ResetPasswordSuccessfulScreen.routeName: (context) =>
-              const ResetPasswordSuccessfulScreen(),
-          ConfirmationCodeScreen.routeName: (context) =>
-              const ConfirmationCodeScreen(),
-          HomeScreen.routeName: (context) => const HomeScreen(),
-          CategoryScreen.routeName: (context) => const CategoryScreen(),
-          SearchScreen.routeName: (context) => SearchScreen(),
-          SubscriptionScreen.routeName: (context) => const SubscriptionScreen(),
-          AccountScreen.routeName: (context) => const AccountScreen(),
-          EditAccountDetilsScreen.routeName: (context) =>
-              EditAccountDetilsScreen(),
-          AudioUploadScreen.routeName: (context) => AudioUploadScreen(),
-          PlayingAudioScreen.routeName: (context) => const PlayingAudioScreen(),
-        },
-        home: const AudioApp(),
+      ],
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => CurrentUserData(),
+          ),
+        ],
+        child: MaterialApp(
+          title: "Audio Entertainment",
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light().copyWith(
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          routes: {
+            LoginScreen.routeName: (context) => const LoginScreen(),
+            SignupScreen.routeName: (context) => const SignupScreen(),
+            ForgotPasswordScreen.routeName: (context) =>
+                const ForgotPasswordScreen(),
+            ResetNewPasswordScreen.routeName: (context) =>
+                const ResetNewPasswordScreen(),
+            ResetPasswordSuccessfulScreen.routeName: (context) =>
+                const ResetPasswordSuccessfulScreen(),
+            ConfirmationCodeScreen.routeName: (context) =>
+                const ConfirmationCodeScreen(),
+            HomeScreen.routeName: (context) => const HomeScreen(),
+            CategoryScreen.routeName: (context) => const CategoryScreen(),
+            SearchScreen.routeName: (context) => SearchScreen(),
+            SubscriptionScreen.routeName: (context) =>
+                const SubscriptionScreen(),
+            AccountScreen.routeName: (context) => const AccountScreen(),
+            EditAccountDetilsScreen.routeName: (context) =>
+                EditAccountDetilsScreen(),
+            AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
+            PlayingAudioScreen.routeName: (context) =>
+                const PlayingAudioScreen(),
+          },
+          home: const AudioApp(),
+        ),
       ),
     );
   }
@@ -124,7 +154,6 @@ class AudioApp extends StatefulWidget {
 class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
   SharedPreferences? _prefs;
   bool _seen = false;
-  bool _isSignedIn = false;
 
   Future<void> checkAlreadySeen() async {
     _prefs = await SharedPreferences.getInstance();
@@ -132,9 +161,18 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
   }
 
   Future<bool> _fetchSession() async {
+    final currentUserDataProvider = context.watch<CurrentUserData>();
     try {
       AuthSession res = await Amplify.Auth.fetchAuthSession(
         options: CognitoSessionOptions(getAWSCredentials: true),
+      );
+
+      AuthUser currentUser = await Amplify.Auth.getCurrentUser();
+      User currentUserData = (await Amplify.DataStore.query(User.classType,
+          where: User.EMAIL.eq(currentUser.username)))[0];
+      currentUserDataProvider.setCurrentUserData = CurrentUser(
+        email: currentUser.username,
+        isCreator: currentUserData.isCreator,
       );
 
       return res.isSignedIn;

@@ -1,7 +1,10 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../User.dart';
 
 part 'register_new_user_event.dart';
 part 'register_new_user_state.dart';
@@ -23,6 +26,18 @@ class RegisterNewUserBloc
         );
 
         if (res.isSignUpComplete == true) {
+          User newUser = User(
+            createdOn: TemporalDateTime(DateTime.now().toLocal()),
+            email: event.userEmail,
+            isCreator: false,
+          );
+
+          try {
+            await Amplify.DataStore.save(newUser);
+          } catch (error) {
+            print(error);
+          }
+          
           yield const RegisterNewUserSuccess();
         } else {
           yield const RegisterNewUserFailure();
