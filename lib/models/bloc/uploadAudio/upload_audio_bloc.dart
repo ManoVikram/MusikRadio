@@ -41,47 +41,39 @@ class UploadAudioBloc extends Bloc<UploadAudioEvent, UploadAudioState> {
 
           // Datastore Upload
           AuthUser userRes = await Amplify.Auth.getCurrentUser();
-          print(userRes.username);
+
           List<User> usersList = await Amplify.DataStore.query(
             User.classType,
             where: User.EMAIL.eq(userRes.username),
           );
 
-          print(usersList);
           User user = usersList.first;
-          print(user);
-
-          Audio audio = Audio(
-            uploadedOn: TemporalDateTime(DateTime.now().toLocal()),
-            title: event.title,
-            category: event.category,
-            audioKey: audioResult.key,
-            thumbnailKey: thumbnailResult.key,
-            listenings: 0,
-            creatorID: user.creator?.id,
-          );
 
           if (user.creator?.id != null) {
+            Audio audio = Audio(
+              uploadedOn: TemporalDateTime(DateTime.now().toLocal()),
+              title: event.title,
+              category: event.category,
+              audioKey: audioResult.key,
+              thumbnailKey: thumbnailResult.key,
+              listenings: 0,
+              creatorID: user.creator?.id,
+            );
+
             Creator oldCreator = (await Amplify.DataStore.query(
                 Creator.classType,
                 where: Creator.ID.eq(user.creator?.id)))[0];
 
-            print("Old Creator:");
-            print(oldCreator.audioUploads);
             List<Audio> newList = [];
             if (oldCreator.audioUploads == null) {
-              print("1");
               newList.add(audio);
             } else {
-              print("2");
               newList = oldCreator.audioUploads!;
               newList.add(audio);
             }
-            print("NewList: $newList");
+
             Creator newCreator =
                 oldCreator.copyWith(id: oldCreator.id, audioUploads: newList);
-            print("New Creator");
-            print(newCreator.audioUploads);
 
             try {
               await Amplify.DataStore.save(newCreator);
