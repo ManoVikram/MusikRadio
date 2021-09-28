@@ -173,6 +173,7 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
       currentUserDataProvider.setCurrentUserData = CurrentUser(
         email: currentUser.username,
         isCreator: currentUserData.isCreator,
+        creatorID: currentUserData.creator?.id,
       );
 
       return res.isSignedIn;

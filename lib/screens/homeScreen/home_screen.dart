@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,10 +10,13 @@ import '../audioUploadScreen/audio_upload_screen.dart';
 import '../searchScreen/search_screen.dart';
 import '../subscriptionScreen/subscription_screen.dart';
 import '../playingAudioScreen/playing_audio_screen.dart';
+
 import '../../widgets/category_button.dart';
 import '../../widgets/audio_card.dart';
 
-import 'package:audio_entertainment_media/models/provider/user_data.dart';
+import '../../models/ModelProvider.dart';
+
+import '../../models/provider/user_data.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -32,14 +36,17 @@ class _HomeScreenState extends State<HomeScreen> {
     const AccountScreen(),
   ];
 
-  void _onTapped(int index) {
+  /* void _onTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
+    final CurrentUserData currentUserDataProvider =
+        context.watch<CurrentUserData>();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -50,7 +57,21 @@ class _HomeScreenState extends State<HomeScreen> {
         child: const Icon(Icons.headphones_rounded),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: _onTapped,
+        // onTap: _onTapped,
+        onTap: (index) async {
+          if (index == 3) {
+            List<Audio> uploadedAudio = await Amplify.DataStore.query(
+                Audio.classType,
+                where: Audio.CREATORID
+                    .eq(currentUserDataProvider.currnetUser!.creatorID));
+
+            currentUserDataProvider.setAudioList = uploadedAudio;
+          }
+
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         currentIndex: _selectedIndex,
         items: const [
           BottomNavigationBarItem(
