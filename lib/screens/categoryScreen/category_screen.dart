@@ -8,11 +8,10 @@ class CategoryScreen extends StatelessWidget {
 
   static const routeName = "/categoryScreen";
 
-
   @override
   Widget build(BuildContext context) {
-  final args =
-      ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +38,8 @@ class CategoryScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index) => const AudioCard(),
+        // itemBuilder: (context, index) => const AudioCard(),
+        itemBuilder: (context, index) => const Text("Audio Card here"),
         itemCount: 3,
       ),
     );

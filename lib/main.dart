@@ -34,6 +34,7 @@ import './models/bloc/userAuthentication/signInUser/sign_in_user_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/forgotPasswordEmail/forgot_password_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_new_password_bloc.dart';
 import './models/bloc/uploadAudio/upload_audio_bloc.dart';
+import './models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 
 import './models/provider/user_data.dart';
 
@@ -98,6 +99,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<UploadAudioBloc>(
           create: (context) => UploadAudioBloc(),
+        ),
+        BlocProvider<FetchAudioThumbnailUrlBloc>(
+          create: (context) => FetchAudioThumbnailUrlBloc(),
         ),
       ],
       child: MultiProvider(

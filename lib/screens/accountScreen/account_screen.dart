@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../editAccountDetilsScreen/edit_account_details_screen.dart';
+
 import '../../widgets/audio_card.dart';
+
+import '../../models/provider/user_data.dart';
+
+import '../../models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({Key? key}) : super(key: key);
@@ -11,6 +18,9 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CurrentUser currentUserData =
+        context.watch<CurrentUserData>().currnetUser;
+
     return Scaffold(
       appBar: AppBar(
         // Show this back button only while viewing others' account
@@ -178,22 +188,37 @@ class AccountScreen extends StatelessWidget {
                 thickness: 1,
               ),
               // If the user haven't uploaded any content display this
-              /* Text(
-                "You haven't uploaded any content yet!",
-                style: TextStyle(
-                  fontFamily: GoogleFonts.roboto().fontFamily,
-                  color: Colors.grey,
+              if (currentUserData.audioUploads == null)
+                Text(
+                  "You haven't uploaded any content yet!",
+                  style: TextStyle(
+                    fontFamily: GoogleFonts.roboto().fontFamily,
+                    color: Colors.grey,
+                  ),
                 ),
-              ), */
               // Else display this
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  return const AudioCard();
-                },
-              ),
+              if (currentUserData.audioUploads != null)
+                BlocBuilder<FetchAudioThumbnailUrlBloc, FetchURLState>(
+                  builder: (context, state) {
+                    return state is FetchURLInProgress
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: (state as FetchURLSuccess)
+                                .uploadedContentUrl
+                                .length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return AudioCard(
+                                audio: currentUserData.audioUploads![index],
+                                url: state.uploadedContentUrl[index],
+                              );
+                            },
+                          );
+                  },
+                ),
               const SizedBox(
                 height: 10,
               ),

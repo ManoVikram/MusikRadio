@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../categoryScreen/category_screen.dart';
 import '../accountScreen/account_screen.dart';
@@ -17,6 +18,8 @@ import '../../widgets/audio_card.dart';
 import '../../models/ModelProvider.dart';
 
 import '../../models/provider/user_data.dart';
+
+import '../../models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -47,6 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final CurrentUserData currentUserDataProvider =
         context.watch<CurrentUserData>();
 
+    final FetchAudioThumbnailUrlBloc fetchUrlBloc =
+        context.watch<FetchAudioThumbnailUrlBloc>();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -66,6 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     .eq(currentUserDataProvider.currnetUser!.creatorID));
 
             currentUserDataProvider.setAudioList = uploadedAudio;
+
+            fetchUrlBloc.add(FetchCurrentCreatorContentURL(
+                uploadedAudio:
+                    currentUserDataProvider.currnetUser.audioUploads));
           }
 
           setState(() {
@@ -249,7 +259,8 @@ class HomeScreenUI extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 3,
               itemBuilder: (BuildContext context, int index) {
-                return const AudioCard();
+                // return const AudioCard();
+                return const Text("Audio Card here");
               },
             ),
             const SizedBox(

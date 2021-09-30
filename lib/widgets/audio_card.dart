@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../models/ModelProvider.dart';
+
 class AudioCard extends StatelessWidget {
+  final Audio audio;
+  final Map<String, String> url;
+
   const AudioCard({
     Key? key,
+    required this.audio,
+    required this.url,
   }) : super(key: key);
 
   @override
@@ -30,11 +37,16 @@ class AudioCard extends StatelessWidget {
             Expanded(
               flex: 7,
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
+                  ),
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      url["thumbnailURL"]!,
+                    ),
                   ),
                 ),
               ),
@@ -77,7 +89,7 @@ class AudioCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "TITLE",
+                            audio.title,
                             style: TextStyle(
                               fontFamily: GoogleFonts.roboto().fontFamily,
                               fontSize: 16,
