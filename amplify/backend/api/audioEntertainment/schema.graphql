@@ -27,6 +27,7 @@ type User @model @auth(rules: [{allow: public}]) {
   creator: Creator @connection
   following: [ID]
   followers: [ID]
+  profilePictureKey: String
 }
 
 type UserAudio @model(queries: null) @key(name: "byAudio", fields: ["audioID", "userID"]) @key(name: "byUser", fields: ["userID", "audioID"]) @auth(rules: [{allow: public}, {allow: public}]) {

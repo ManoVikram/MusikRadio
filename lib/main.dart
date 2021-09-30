@@ -35,6 +35,7 @@ import './models/bloc/userAuthentication/forgotPassword/forgotPasswordEmail/forg
 import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_new_password_bloc.dart';
 import './models/bloc/uploadAudio/upload_audio_bloc.dart';
 import './models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
+import './models/bloc/updateUserData/update_user_data_bloc.dart';
 
 import './models/provider/user_data.dart';
 
@@ -103,6 +104,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<FetchAudioThumbnailUrlBloc>(
           create: (context) => FetchAudioThumbnailUrlBloc(),
         ),
+        BlocProvider<UpdateUserDataBloc>(
+          create: (context) => UpdateUserDataBloc(),
+        ),
       ],
       child: MultiProvider(
         providers: [
@@ -134,7 +138,7 @@ class _MyAppState extends State<MyApp> {
                 const SubscriptionScreen(),
             AccountScreen.routeName: (context) => const AccountScreen(),
             EditAccountDetilsScreen.routeName: (context) =>
-                EditAccountDetilsScreen(),
+                const EditAccountDetilsScreen(),
             AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
             PlayingAudioScreen.routeName: (context) =>
                 const PlayingAudioScreen(),
@@ -174,14 +178,34 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
       AuthUser currentUser = await Amplify.Auth.getCurrentUser();
       User currentUserData = (await Amplify.DataStore.query(User.classType,
           where: User.EMAIL.eq(currentUser.username)))[0];
-      currentUserDataProvider.setCurrentUserData = CurrentUser(
-        email: currentUser.username,
-        isCreator: currentUserData.isCreator,
-        name: currentUserData.name,
-        description: currentUserData.description,
-        followers: currentUserData.followers,
-        creatorID: currentUserData.creator?.id,
-      );
+
+      GetUrlResult? profilePictureURL;
+
+      if (currentUserData.profilePictureKey != null) {
+        profilePictureURL = await Amplify.Storage.getUrl(
+            key: currentUserData.profilePictureKey!);
+            
+        currentUserDataProvider.setCurrentUserData = CurrentUser(
+          email: currentUser.username,
+          userID: currentUser.userId,
+          profilePictureURL: profilePictureURL.url,
+          isCreator: currentUserData.isCreator,
+          name: currentUserData.name,
+          description: currentUserData.description,
+          followers: currentUserData.followers,
+          creatorID: currentUserData.creator?.id,
+        );
+      } else {
+        currentUserDataProvider.setCurrentUserData = CurrentUser(
+          email: currentUser.username,
+          userID: currentUser.userId,
+          isCreator: currentUserData.isCreator,
+          name: currentUserData.name,
+          description: currentUserData.description,
+          followers: currentUserData.followers,
+          creatorID: currentUserData.creator?.id,
+        );
+      }
 
       return res.isSignedIn;
     } on AuthException catch (error) {

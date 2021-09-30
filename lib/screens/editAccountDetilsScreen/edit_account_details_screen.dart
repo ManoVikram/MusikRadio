@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/provider/user_data.dart';
+
+import '../../models/bloc/updateUserData/update_user_data_bloc.dart';
 
 class EditAccountDetilsScreen extends StatefulWidget {
   const EditAccountDetilsScreen({Key? key}) : super(key: key);
@@ -30,6 +33,9 @@ class _EditAccountDetilsScreenState extends State<EditAccountDetilsScreen> {
   Widget build(BuildContext context) {
     final CurrentUser currentUserData =
         context.watch<CurrentUserData>().currnetUser;
+
+    final UpdateUserDataBloc updateUserDataBloc =
+        context.watch<UpdateUserDataBloc>();
 
     _nameController.text = currentUserData.name ?? "";
     _bioController.text = currentUserData.description ?? "";
@@ -59,7 +65,29 @@ class _EditAccountDetilsScreenState extends State<EditAccountDetilsScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (_selectedProfilePicture == null) {
+                          updateUserDataBloc.add(
+                            UpdateUserData(
+                              // userID: currentUserData.userID,
+                              email: currentUserData.email,
+                              name: _nameController.text,
+                              description: _bioController.text,
+                            ),
+                          );
+                        } else {
+                          updateUserDataBloc.add(
+                            UpdateUserData(
+                              // userID: currentUserData.userID,
+                              email: currentUserData.email,
+                              name: _nameController.text,
+                              description: _bioController.text,
+                              profilePicture:
+                                  File(_selectedProfilePicture!.path),
+                            ),
+                          );
+                        }
+                      },
                       icon: const Icon(Icons.done_rounded),
                       iconSize: 32,
                       color: Colors.redAccent,

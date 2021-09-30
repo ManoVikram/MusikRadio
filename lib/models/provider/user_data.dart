@@ -4,6 +4,7 @@ import '../ModelProvider.dart';
 
 class CurrentUser {
   final String email;
+  final String userID;
   final bool isCreator;
   String? name;
   String? description;
@@ -14,6 +15,7 @@ class CurrentUser {
 
   CurrentUser({
     required this.email,
+    required this.userID,
     required this.isCreator,
     this.name,
     this.description,

@@ -87,8 +87,9 @@ class AccountScreen extends StatelessWidget {
                                     "assets/images/DefaultProfilePicture.jpg"),
                                 fit: BoxFit.cover,
                               )
-                            : const DecorationImage(
-                                image: NetworkImage(""),
+                            : DecorationImage(
+                                image: NetworkImage(
+                                    currentUserData.profilePictureURL!),
                                 fit: BoxFit.cover,
                               ),
                       ),
@@ -111,8 +112,7 @@ class AccountScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            currentUserData.description ??
-                                "Bio Data/Description",
+                            currentUserData.description ?? "Hey there!",
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -222,6 +222,7 @@ class AccountScreen extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               return AudioCard(
                                 channelName: currentUserData.name!,
+                                profilePictureUrl: currentUserData.profilePictureURL,
                                 audio: currentUserData.audioUploads![index],
                                 url: state.uploadedContentUrl[index],
                               );

@@ -28,7 +28,7 @@ export 'UserAudio.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "7b237b575669ad87c05d3f955a9c78bc";
+  String version = "9a04f4e56380c42e9fc30b39e6c1e3d9";
   @override
   List<ModelSchema> modelSchemas = [Audio.schema, Creator.schema, User.schema, UserAudio.schema];
   static final ModelProvider _instance = ModelProvider();

@@ -35,6 +35,7 @@ class User extends Model {
   final Creator? _creator;
   final List<String>? _following;
   final List<String>? _followers;
+  final String? _profilePictureKey;
 
   @override
   getInstanceType() => classType;
@@ -92,9 +93,13 @@ class User extends Model {
     return _followers;
   }
   
-  const User._internal({required this.id, required createdOn, required email, name, description, required isCreator, liked, creator, following, followers}): _createdOn = createdOn, _email = email, _name = name, _description = description, _isCreator = isCreator, _liked = liked, _creator = creator, _following = following, _followers = followers;
+  String? get profilePictureKey {
+    return _profilePictureKey;
+  }
   
-  factory User({String? id, required TemporalDateTime createdOn, required String email, String? name, String? description, required bool isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers}) {
+  const User._internal({required this.id, required createdOn, required email, name, description, required isCreator, liked, creator, following, followers, profilePictureKey}): _createdOn = createdOn, _email = email, _name = name, _description = description, _isCreator = isCreator, _liked = liked, _creator = creator, _following = following, _followers = followers, _profilePictureKey = profilePictureKey;
+  
+  factory User({String? id, required TemporalDateTime createdOn, required String email, String? name, String? description, required bool isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers, String? profilePictureKey}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
       createdOn: createdOn,
@@ -105,7 +110,8 @@ class User extends Model {
       liked: liked != null ? List<UserAudio>.unmodifiable(liked) : liked,
       creator: creator,
       following: following != null ? List<String>.unmodifiable(following) : following,
-      followers: followers != null ? List<String>.unmodifiable(followers) : followers);
+      followers: followers != null ? List<String>.unmodifiable(followers) : followers,
+      profilePictureKey: profilePictureKey);
   }
   
   bool equals(Object other) {
@@ -125,7 +131,8 @@ class User extends Model {
       DeepCollectionEquality().equals(_liked, other._liked) &&
       _creator == other._creator &&
       DeepCollectionEquality().equals(_following, other._following) &&
-      DeepCollectionEquality().equals(_followers, other._followers);
+      DeepCollectionEquality().equals(_followers, other._followers) &&
+      _profilePictureKey == other._profilePictureKey;
   }
   
   @override
@@ -144,13 +151,14 @@ class User extends Model {
     buffer.write("isCreator=" + (_isCreator != null ? _isCreator!.toString() : "null") + ", ");
     buffer.write("creator=" + (_creator != null ? _creator!.toString() : "null") + ", ");
     buffer.write("following=" + (_following != null ? _following!.toString() : "null") + ", ");
-    buffer.write("followers=" + (_followers != null ? _followers!.toString() : "null"));
+    buffer.write("followers=" + (_followers != null ? _followers!.toString() : "null") + ", ");
+    buffer.write("profilePictureKey=" + "$_profilePictureKey");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  User copyWith({String? id, TemporalDateTime? createdOn, String? email, String? name, String? description, bool? isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers}) {
+  User copyWith({String? id, TemporalDateTime? createdOn, String? email, String? name, String? description, bool? isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers, String? profilePictureKey}) {
     return User(
       id: id ?? this.id,
       createdOn: createdOn ?? this.createdOn,
@@ -161,7 +169,8 @@ class User extends Model {
       liked: liked ?? this.liked,
       creator: creator ?? this.creator,
       following: following ?? this.following,
-      followers: followers ?? this.followers);
+      followers: followers ?? this.followers,
+      profilePictureKey: profilePictureKey ?? this.profilePictureKey);
   }
   
   User.fromJson(Map<String, dynamic> json)  
@@ -181,10 +190,11 @@ class User extends Model {
         ? Creator.fromJson(new Map<String, dynamic>.from(json['creator']['serializedData']))
         : null,
       _following = json['following']?.cast<String>(),
-      _followers = json['followers']?.cast<String>();
+      _followers = json['followers']?.cast<String>(),
+      _profilePictureKey = json['profilePictureKey'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'createdOn': _createdOn?.format(), 'email': _email, 'name': _name, 'description': _description, 'isCreator': _isCreator, 'liked': _liked?.map((e) => e?.toJson())?.toList(), 'creator': _creator?.toJson(), 'following': _following, 'followers': _followers
+    'id': id, 'createdOn': _createdOn?.format(), 'email': _email, 'name': _name, 'description': _description, 'isCreator': _isCreator, 'liked': _liked?.map((e) => e?.toJson())?.toList(), 'creator': _creator?.toJson(), 'following': _following, 'followers': _followers, 'profilePictureKey': _profilePictureKey
   };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
@@ -201,6 +211,7 @@ class User extends Model {
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Creator).toString()));
   static final QueryField FOLLOWING = QueryField(fieldName: "following");
   static final QueryField FOLLOWERS = QueryField(fieldName: "followers");
+  static final QueryField PROFILEPICTUREKEY = QueryField(fieldName: "profilePictureKey");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "User";
     modelSchemaDefinition.pluralName = "Users";
@@ -274,6 +285,12 @@ class User extends Model {
       isRequired: false,
       isArray: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.PROFILEPICTUREKEY,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
   });
 }

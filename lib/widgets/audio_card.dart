@@ -82,8 +82,8 @@ class AudioCard extends StatelessWidget {
                                     "assets/images/DefaultProfilePicture.jpg"),
                                 fit: BoxFit.cover,
                               )
-                            : const DecorationImage(
-                                image: NetworkImage(""),
+                            : DecorationImage(
+                                image: NetworkImage(profilePictureUrl!),
                                 fit: BoxFit.cover,
                               ),
                       ),
