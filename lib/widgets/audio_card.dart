@@ -4,13 +4,17 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/ModelProvider.dart';
 
 class AudioCard extends StatelessWidget {
+  final String channelName;
   final Audio audio;
   final Map<String, String> url;
+  String? profilePictureUrl;
 
-  const AudioCard({
+  AudioCard({
     Key? key,
+    required this.channelName,
     required this.audio,
     required this.url,
+    this.profilePictureUrl,
   }) : super(key: key);
 
   @override
@@ -69,15 +73,19 @@ class AudioCard extends StatelessWidget {
                     Container(
                       height: 50,
                       width: 50,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          // If the user haven't set any image, show a default image here
-                          // Use eitther the AssetImage or NetworkImage for the default one
-                          image: NetworkImage(""),
-                          fit: BoxFit.cover,
-                        ),
+                        image: profilePictureUrl == null
+                            ? const DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/DefaultProfilePicture.jpg"),
+                                fit: BoxFit.cover,
+                              )
+                            : const DecorationImage(
+                                image: NetworkImage(""),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -92,7 +100,7 @@ class AudioCard extends StatelessWidget {
                             audio.title,
                             style: TextStyle(
                               fontFamily: GoogleFonts.roboto().fontFamily,
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -103,7 +111,7 @@ class AudioCard extends StatelessWidget {
                             height: 7,
                           ),
                           Text(
-                            "Channel Name",
+                            channelName,
                             style: TextStyle(
                               fontFamily: GoogleFonts.openSans().fontFamily,
                               fontSize: 14,

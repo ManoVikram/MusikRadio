@@ -25,21 +25,24 @@ class AccountScreen extends StatelessWidget {
       appBar: AppBar(
         // Show this back button only while viewing others' account
         // and not while viewing our own account
-        leading: IconButton(
+        /* leading: IconButton(
           onPressed: () {},
           icon: const Icon(
             Icons.arrow_back_ios_new,
           ),
           color: Colors.black,
-        ),
+        ), */
         actions: [
-          IconButton(
-            onPressed: () {},
+          // Uncomment the below icon while implementing the feature
+          /* IconButton(
+            onPressed: () {
+              Share.share("");
+            },
             icon: const Icon(
               Icons.share,
             ),
             color: Colors.black,
-          ),
+          ), */
           // Show this edit button only while viewing our account
           // and not while viewing others' account
           IconButton(
@@ -75,15 +78,19 @@ class AccountScreen extends StatelessWidget {
                     Container(
                       height: 100,
                       width: 100,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.orange,
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          // If the user haven't set any image, show a default image here
-                          // Use eitther the AssetImage or NetworkImage for the default one
-                          image: NetworkImage(""),
-                          fit: BoxFit.cover,
-                        ),
+                        image: currentUserData.profilePictureURL == null
+                            ? const DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/DefaultProfilePicture.jpg"),
+                                fit: BoxFit.cover,
+                              )
+                            : const DecorationImage(
+                                image: NetworkImage(""),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -95,7 +102,7 @@ class AccountScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Name",
+                            currentUserData.name ?? currentUserData.email,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontFamily: GoogleFonts.poppins().fontFamily,
@@ -104,7 +111,8 @@ class AccountScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Bio Data/Description",
+                            currentUserData.description ??
+                                "Bio Data/Description",
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -160,17 +168,18 @@ class AccountScreen extends StatelessWidget {
                             fontFamily: GoogleFonts.roboto().fontFamily,
                             color: Colors.black,
                           ),
-                          children: const [
+                          children: [
                             // Check this to convert number to human readable format:
                             // https://stackoverflow.com/questions/54690790/convert-a-number-to-human-readable-format-e-g-1-5k-5m-1b-in-dart/54691084
                             TextSpan(
-                              text: "1234\n",
+                              text: "${currentUserData.followers!.length}\n",
                               style: TextStyle(
                                 fontSize: 22,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            TextSpan(
+                            const TextSpan(
                               text: "Followers",
                               style: TextStyle(
                                 fontSize: 16,
@@ -212,6 +221,7 @@ class AccountScreen extends StatelessWidget {
                                 .length,
                             itemBuilder: (BuildContext context, int index) {
                               return AudioCard(
+                                channelName: currentUserData.name!,
                                 audio: currentUserData.audioUploads![index],
                                 url: state.uploadedContentUrl[index],
                               );

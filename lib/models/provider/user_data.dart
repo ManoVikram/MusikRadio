@@ -5,12 +5,20 @@ import '../ModelProvider.dart';
 class CurrentUser {
   final String email;
   final bool isCreator;
+  String? name;
+  String? description;
+  String? profilePictureURL;
+  List<String>? followers;
   String? creatorID;
   List<Audio>? audioUploads;
 
   CurrentUser({
     required this.email,
     required this.isCreator,
+    this.name,
+    this.description,
+    this.profilePictureURL,
+    this.followers,
     this.creatorID,
     this.audioUploads,
   });

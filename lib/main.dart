@@ -177,6 +177,9 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
       currentUserDataProvider.setCurrentUserData = CurrentUser(
         email: currentUser.username,
         isCreator: currentUserData.isCreator,
+        name: currentUserData.name,
+        description: currentUserData.description,
+        followers: currentUserData.followers,
         creatorID: currentUserData.creator?.id,
       );
 
