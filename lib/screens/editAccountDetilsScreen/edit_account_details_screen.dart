@@ -1,17 +1,39 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
-class EditAccountDetilsScreen extends StatelessWidget {
-  EditAccountDetilsScreen({Key? key}) : super(key: key);
+import '../../models/provider/user_data.dart';
+
+class EditAccountDetilsScreen extends StatefulWidget {
+  const EditAccountDetilsScreen({Key? key}) : super(key: key);
 
   static const String routeName = "/editAccountDetailsScreen";
 
-  // If the user already have a name and bio, it should be passed to 'text' here
-  final TextEditingController _nameController = TextEditingController(text: "");
-  final TextEditingController _bioController = TextEditingController(text: "");
+  @override
+  State<EditAccountDetilsScreen> createState() =>
+      _EditAccountDetilsScreenState();
+}
+
+class _EditAccountDetilsScreenState extends State<EditAccountDetilsScreen> {
+  final TextEditingController _nameController = TextEditingController();
+
+  final TextEditingController _bioController = TextEditingController();
+
+  final _imagePicker = ImagePicker();
+
+  XFile? _selectedProfilePicture;
 
   @override
   Widget build(BuildContext context) {
+    final CurrentUser currentUserData =
+        context.watch<CurrentUserData>().currnetUser;
+
+    _nameController.text = currentUserData.name ?? "";
+    _bioController.text = currentUserData.description ?? "";
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -32,7 +54,8 @@ class EditAccountDetilsScreen extends StatelessWidget {
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(
-                        Icons.arrow_back_ios_new,
+                        // Icons.arrow_back_ios_new,
+                        Icons.close,
                       ),
                     ),
                     IconButton(
@@ -47,27 +70,44 @@ class EditAccountDetilsScreen extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        height: 140,
-                        width: 140,
-                        decoration: const BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            // If the user doesn't have any image,
-                            // display a default one here
-                            image: NetworkImage(""),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                          height: 140,
+                          width: 140,
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            shape: BoxShape.circle,
+                            image: _selectedProfilePicture == null
+                                ? (currentUserData.profilePictureURL == null
+                                    ? const DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/DefaultProfilePicture.jpg"),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const DecorationImage(
+                                        image: NetworkImage(""),
+                                        fit: BoxFit.cover,
+                                      ))
+                                : DecorationImage(
+                                    image: FileImage(
+                                      File(_selectedProfilePicture!.path),
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                          )),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () async {
+                            final XFile? pickedImage = await _imagePicker
+                                .pickImage(source: ImageSource.gallery);
+
+                            setState(() {
+                              _selectedProfilePicture = pickedImage;
+                            });
+                          },
                           child: Container(
-                            height: 40,
-                            width: 40,
+                            height: 36,
+                            width: 36,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.blueGrey,
