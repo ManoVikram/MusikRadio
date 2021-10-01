@@ -51,6 +51,7 @@ class AudioCard extends StatelessWidget {
                     image: NetworkImage(
                       url["thumbnailURL"]!,
                     ),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

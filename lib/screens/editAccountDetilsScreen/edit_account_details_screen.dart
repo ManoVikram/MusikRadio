@@ -32,7 +32,7 @@ class _EditAccountDetilsScreenState extends State<EditAccountDetilsScreen> {
   @override
   Widget build(BuildContext context) {
     final CurrentUser currentUserData =
-        context.watch<CurrentUserData>().currnetUser;
+        context.watch<CurrentUserData>().currentUser;
 
     final UpdateUserDataBloc updateUserDataBloc =
         context.watch<UpdateUserDataBloc>();

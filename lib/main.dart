@@ -184,7 +184,7 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
       if (currentUserData.profilePictureKey != null) {
         profilePictureURL = await Amplify.Storage.getUrl(
             key: currentUserData.profilePictureKey!);
-            
+
         currentUserDataProvider.setCurrentUserData = CurrentUser(
           email: currentUser.username,
           userID: currentUser.userId,
@@ -192,7 +192,7 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
           isCreator: currentUserData.isCreator,
           name: currentUserData.name,
           description: currentUserData.description,
-          followers: currentUserData.followers,
+          followers: currentUserData.followers ?? [],
           creatorID: currentUserData.creator?.id,
         );
       } else {
@@ -202,7 +202,7 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
           isCreator: currentUserData.isCreator,
           name: currentUserData.name,
           description: currentUserData.description,
-          followers: currentUserData.followers,
+          followers: currentUserData.followers ?? [],
           creatorID: currentUserData.creator?.id,
         );
       }

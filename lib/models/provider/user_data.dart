@@ -37,5 +37,5 @@ class CurrentUserData with ChangeNotifier {
     _currentUser!.audioUploads = audioList;
   }
 
-  get currnetUser => _currentUser;
+  get currentUser => _currentUser;
 }

@@ -65,17 +65,17 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         // onTap: _onTapped,
         onTap: (index) async {
-          if (index == 3) {
+          if (index == 3 && currentUserDataProvider.currentUser.isCreator) {
             List<Audio> uploadedAudio = await Amplify.DataStore.query(
                 Audio.classType,
                 where: Audio.CREATORID
-                    .eq(currentUserDataProvider.currnetUser!.creatorID));
+                    .eq(currentUserDataProvider.currentUser!.creatorID));
 
             currentUserDataProvider.setAudioList = uploadedAudio;
 
             fetchUrlBloc.add(FetchCurrentCreatorContentURL(
                 uploadedAudio:
-                    currentUserDataProvider.currnetUser.audioUploads));
+                    currentUserDataProvider.currentUser.audioUploads));
           }
 
           setState(() {
@@ -145,7 +145,7 @@ class HomeScreenUI extends StatelessWidget {
                   ),
                 ),
                 // Should be shown only to creators
-                if (currentUserProvider.currnetUser.isCreator)
+                if (currentUserProvider.currentUser?.isCreator != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(

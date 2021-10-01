@@ -19,7 +19,7 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CurrentUser currentUserData =
-        context.watch<CurrentUserData>().currnetUser;
+        context.watch<CurrentUserData>().currentUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -182,7 +182,7 @@ class AccountScreen extends StatelessWidget {
                             const TextSpan(
                               text: "Followers",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                               ),
                             ),
                           ],
@@ -197,12 +197,26 @@ class AccountScreen extends StatelessWidget {
                 thickness: 1,
               ),
               // If the user haven't uploaded any content display this
+              if (currentUserData.audioUploads!.isEmpty)
+                Center(
+                  child: Text(
+                    "You haven't uploaded any content yet!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
               if (currentUserData.audioUploads == null)
-                Text(
-                  "You haven't uploaded any content yet!",
-                  style: TextStyle(
-                    fontFamily: GoogleFonts.roboto().fontFamily,
-                    color: Colors.grey,
+                Center(
+                  child: Text(
+                    "You are not a creator yet!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               // Else display this
@@ -222,7 +236,8 @@ class AccountScreen extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               return AudioCard(
                                 channelName: currentUserData.name!,
-                                profilePictureUrl: currentUserData.profilePictureURL,
+                                profilePictureUrl:
+                                    currentUserData.profilePictureURL,
                                 audio: currentUserData.audioUploads![index],
                                 url: state.uploadedContentUrl[index],
                               );
