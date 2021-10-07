@@ -1,6 +1,6 @@
 part of './upload_audio_bloc.dart';
 
-abstract class UploadAudioState {
+abstract class UploadAudioState extends Equatable {
   const UploadAudioState();
 
   @override

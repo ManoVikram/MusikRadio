@@ -1,4 +1,6 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,6 +41,50 @@ class _HomeScreenState extends State<HomeScreen> {
     const AccountScreen(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      _getUserData(context);
+    });
+  }
+
+  void _getUserData(BuildContext context) async {
+    final CurrentUserData currentUserDataProvider =
+        context.read<CurrentUserData>();
+
+    AuthUser currentUser = await Amplify.Auth.getCurrentUser();
+    User currentUserData = (await Amplify.DataStore.query(User.classType,
+        where: User.EMAIL.eq(currentUser.username)))[0];
+
+    if (currentUserData.profilePictureKey != null) {
+      GetUrlResult profilePictureURL =
+          await Amplify.Storage.getUrl(key: currentUserData.profilePictureKey!);
+
+      currentUserDataProvider.setCurrentUserData = CurrentUser(
+        email: currentUser.username,
+        userID: currentUser.userId,
+        profilePictureURL: profilePictureURL.url,
+        isCreator: currentUserData.isCreator,
+        name: currentUserData.name,
+        description: currentUserData.description,
+        followers: currentUserData.followers ?? [],
+      );
+    } else {
+      currentUserDataProvider.setCurrentUserData = CurrentUser(
+        email: currentUser.username,
+        userID: currentUser.userId,
+        isCreator: currentUserData.isCreator,
+        name: currentUserData.name,
+        description: currentUserData.description,
+        followers: currentUserData.followers ?? [],
+      );
+    }
+
+    print(currentUserDataProvider.currentUser.isCreator);
+  }
+
   /* void _onTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -65,11 +111,16 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         // onTap: _onTapped,
         onTap: (index) async {
-          if (index == 3 && currentUserDataProvider.currentUser.isCreator) {
+          if (index == 3 &&
+              currentUserDataProvider.currentUser != null &&
+              currentUserDataProvider.currentUser.isCreator) {
             List<Audio> uploadedAudio = await Amplify.DataStore.query(
-                Audio.classType,
-                where: Audio.CREATORID
-                    .eq(currentUserDataProvider.currentUser!.creatorID));
+              Audio.classType,
+              where:
+                  Audio.USERID.eq(currentUserDataProvider.currentUser.userID),
+            );
+
+            print(uploadedAudio);
 
             currentUserDataProvider.setAudioList = uploadedAudio;
 
@@ -145,7 +196,8 @@ class HomeScreenUI extends StatelessWidget {
                   ),
                 ),
                 // Should be shown only to creators
-                if (currentUserProvider.currentUser?.isCreator != null)
+                if (currentUserProvider.currentUser != null &&
+                    currentUserProvider.currentUser?.isCreator)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(

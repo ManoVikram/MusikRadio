@@ -197,7 +197,8 @@ class AccountScreen extends StatelessWidget {
                 thickness: 1,
               ),
               // If the user haven't uploaded any content display this
-              if (currentUserData.audioUploads!.isEmpty)
+              if (currentUserData.audioUploads != null &&
+                  currentUserData.audioUploads!.isEmpty)
                 Center(
                   child: Text(
                     "You haven't uploaded any content yet!",

@@ -1,6 +1,6 @@
 part of './fetch_audio_thumbnail_url_bloc.dart';
 
-abstract class FetchURLState {
+abstract class FetchURLState extends Equatable {
   const FetchURLState();
 
   @override

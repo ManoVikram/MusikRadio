@@ -1,6 +1,6 @@
 part of './update_user_data_bloc.dart';
 
-abstract class UpdateUserDataState {
+abstract class UpdateUserDataState extends Equatable {
   const UpdateUserDataState();
 
   @override

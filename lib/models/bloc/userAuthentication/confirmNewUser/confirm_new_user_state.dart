@@ -8,7 +8,7 @@ class ConfirmationUserData {
   });
 }
 
-abstract class ConfirmNewUserState {
+abstract class ConfirmNewUserState extends Equatable {
   const ConfirmNewUserState();
 
   @override

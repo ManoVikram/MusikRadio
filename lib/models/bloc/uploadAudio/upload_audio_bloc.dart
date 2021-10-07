@@ -15,86 +15,85 @@ part './upload_audio_event.dart';
 part './upload_audio_state.dart';
 
 class UploadAudioBloc extends Bloc<UploadAudioEvent, UploadAudioState> {
-  UploadAudioBloc() : super(const UploadAudioInitial());
+  UploadAudioBloc() : super(const UploadAudioInitial()) {
+    on<UploadAudio>(_uploadAudio);
+  }
 
-  @override
-  Stream<UploadAudioState> mapEventToState(UploadAudioEvent event) async* {
-    if (event is UploadAudio) {
-      yield const UploadAudioInProgress();
+  Future<void> _uploadAudio(
+      UploadAudio event, Emitter<UploadAudioState> emit) async {
+    emit(const UploadAudioInProgress());
 
-      // Audio Upload
-      final audioPlatformFile = event.audioResult.files.single;
-      final audioPath = audioPlatformFile.path!;
-      final audioKey = "audio/" + audioPlatformFile.name;
-      final audioFile = File(audioPath);
+    // Audio Upload
+    final audioPlatformFile = event.audioResult.files.single;
+    final audioPath = audioPlatformFile.path!;
+    final audioKey = "audio/" + audioPlatformFile.name;
+    final audioFile = File(audioPath);
+
+    try {
+      final UploadFileResult audioResult =
+          await Amplify.Storage.uploadFile(local: audioFile, key: audioKey);
+
+      // Thumbnail Upload
+      final thumbnailKey = "thumbnail/" + DateTime.now().toString();
+      final thumbnailFile = File(event.thumbnailResult!.path);
       try {
-        final UploadFileResult audioResult =
-            await Amplify.Storage.uploadFile(local: audioFile, key: audioKey);
+        final UploadFileResult thumbnailResult =
+            await Amplify.Storage.uploadFile(
+                local: thumbnailFile, key: thumbnailKey);
 
-        // Thumbnail Upload
-        final thumbnailKey = "thumbnail/" + DateTime.now().toString();
-        final thumbnailFile = File(event.thumbnailResult!.path);
-        try {
-          final UploadFileResult thumbnailResult =
-              await Amplify.Storage.uploadFile(
-                  local: thumbnailFile, key: thumbnailKey);
+        // Datastore Upload
+        AuthUser userRes = await Amplify.Auth.getCurrentUser();
 
-          // Datastore Upload
-          AuthUser userRes = await Amplify.Auth.getCurrentUser();
+        User user = (await Amplify.DataStore.query(
+          User.classType,
+          where: User.EMAIL.eq(userRes.username),
+        ))[0];
 
-          List<User> usersList = await Amplify.DataStore.query(
-            User.classType,
-            where: User.EMAIL.eq(userRes.username),
+        if (user.isCreator) {
+          Audio audio = Audio(
+            uploadedOn: TemporalDateTime(DateTime.now().toLocal()),
+            title: event.title,
+            description: event.description,
+            category: event.category,
+            audioKey: audioResult.key,
+            thumbnailKey: thumbnailResult.key,
+            listenings: 0,
+            userID: userRes.userId,
           );
 
-          User user = usersList.first;
-
-          if (user.creator?.id != null) {
-            Audio audio = Audio(
-              uploadedOn: TemporalDateTime(DateTime.now().toLocal()),
-              title: event.title,
-              category: event.category,
-              audioKey: audioResult.key,
-              thumbnailKey: thumbnailResult.key,
-              listenings: 0,
-              creatorID: user.creator?.id,
-            );
-
-            Creator oldCreator = (await Amplify.DataStore.query(
-                Creator.classType,
-                where: Creator.ID.eq(user.creator?.id)))[0];
-
-            List<Audio> newList = [];
-            if (oldCreator.audioUploads == null) {
-              newList.add(audio);
-            } else {
-              newList = oldCreator.audioUploads!;
-              newList.add(audio);
-            }
-
-            Creator newCreator =
-                oldCreator.copyWith(id: oldCreator.id, audioUploads: newList);
-
-            try {
-              await Amplify.DataStore.save(newCreator);
-            } catch (error) {
-              print(error);
-            }
-
-            try {
-              await Amplify.DataStore.save(audio);
-            } catch (error) {
-              print(error);
-            }
+          try {
+            await Amplify.DataStore.save(audio);
+          } catch (error) {
+            print(error);
           }
 
-          yield const UploadAudioSuccess();
-        } on StorageException catch (error) {
-          yield UploadAudioFailure(error: error.message);
+          List<Audio> updatedAudioList = [];
+
+          if (user.audioUploads == null) {
+            updatedAudioList.add(audio);
+          } else {
+            updatedAudioList = user.audioUploads!;
+            updatedAudioList.add(audio);
+          }
+
+          User userUpdated = user.copyWith(
+            id: user.id,
+            audioUploads: updatedAudioList,
+          );
+
+          try {
+            await Amplify.DataStore.save(userUpdated);
+          } catch (error) {
+            print(error);
+          }
         }
+
+        emit(const UploadAudioSuccess());
       } on StorageException catch (error) {
-        yield UploadAudioFailure(error: error.message);
+        emit(UploadAudioFailure(error: error.message));
       }
+    } on StorageException catch (error) {
+      emit(UploadAudioFailure(error: error.message));
     }
   }
 }

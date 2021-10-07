@@ -61,6 +61,7 @@ class _MyAppState extends State<MyApp> {
         AmplifyDataStore(modelProvider: ModelProvider.instance);
     AmplifyAPI apiPlugin = AmplifyAPI();
     AmplifyStorageS3 storagePlugin = AmplifyStorageS3();
+
     await Amplify.addPlugins([
       authPlugin,
       dataStorePlugin,
@@ -81,6 +82,7 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<RegisterNewUserBloc>(
@@ -175,14 +177,12 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
         options: CognitoSessionOptions(getAWSCredentials: true),
       );
 
-      AuthUser currentUser = await Amplify.Auth.getCurrentUser();
+      /* AuthUser currentUser = await Amplify.Auth.getCurrentUser();
       User currentUserData = (await Amplify.DataStore.query(User.classType,
           where: User.EMAIL.eq(currentUser.username)))[0];
 
-      GetUrlResult? profilePictureURL;
-
       if (currentUserData.profilePictureKey != null) {
-        profilePictureURL = await Amplify.Storage.getUrl(
+        GetUrlResult profilePictureURL = await Amplify.Storage.getUrl(
             key: currentUserData.profilePictureKey!);
 
         currentUserDataProvider.setCurrentUserData = CurrentUser(
@@ -193,7 +193,6 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
           name: currentUserData.name,
           description: currentUserData.description,
           followers: currentUserData.followers ?? [],
-          creatorID: currentUserData.creator?.id,
         );
       } else {
         currentUserDataProvider.setCurrentUserData = CurrentUser(
@@ -203,9 +202,10 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
           name: currentUserData.name,
           description: currentUserData.description,
           followers: currentUserData.followers ?? [],
-          creatorID: currentUserData.creator?.id,
         );
       }
+
+      print(currentUserDataProvider.currentUser.isCreator); */
 
       return res.isSignedIn;
     } on AuthException catch (error) {

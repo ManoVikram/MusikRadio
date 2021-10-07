@@ -8,7 +8,7 @@ class UserData {
   });
 }
 
-abstract class RegisterNewUserState {
+abstract class RegisterNewUserState extends Equatable {
   const RegisterNewUserState();
 
   @override

@@ -10,18 +10,16 @@ class CurrentUser {
   String? description;
   String? profilePictureURL;
   List<String>? followers;
-  String? creatorID;
   List<Audio>? audioUploads;
 
   CurrentUser({
     required this.email,
     required this.userID,
-    required this.isCreator,
+    this.isCreator = false,
     this.name,
     this.description,
     this.profilePictureURL,
     this.followers,
-    this.creatorID,
     this.audioUploads,
   });
 }
