@@ -87,13 +87,12 @@ class UploadAudioBloc extends Bloc<UploadAudioEvent, UploadAudioState> {
             print(error);
           }
         }
-
-        emit(const UploadAudioSuccess());
       } on StorageException catch (error) {
         emit(UploadAudioFailure(error: error.message));
       }
     } on StorageException catch (error) {
       emit(UploadAudioFailure(error: error.message));
     }
+    emit(const UploadAudioSuccess());
   }
 }

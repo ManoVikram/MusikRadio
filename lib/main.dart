@@ -100,9 +100,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ResetNewPasswordBloc>(
           create: (context) => ResetNewPasswordBloc(),
         ),
-        BlocProvider<UploadAudioBloc>(
+        /* BlocProvider<UploadAudioBloc>(
           create: (context) => UploadAudioBloc(),
-        ),
+        ), */
         BlocProvider<FetchAudioThumbnailUrlBloc>(
           create: (context) => FetchAudioThumbnailUrlBloc(),
         ),
@@ -141,7 +141,12 @@ class _MyAppState extends State<MyApp> {
             AccountScreen.routeName: (context) => const AccountScreen(),
             EditAccountDetilsScreen.routeName: (context) =>
                 const EditAccountDetilsScreen(),
-            AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
+            // AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
+            AudioUploadScreen.routeName: (context) =>
+                BlocProvider<UploadAudioBloc>(
+                  create: (context) => UploadAudioBloc(),
+                  child: const AudioUploadScreen(),
+                ),
             PlayingAudioScreen.routeName: (context) =>
                 const PlayingAudioScreen(),
           },

@@ -42,7 +42,7 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
     return BlocConsumer<UploadAudioBloc, UploadAudioState>(
       listener: (context, state) {
         if (state is UploadAudioSuccess) {
-          // Navigator.of(context).pop();
+          print("1. Audio Uploaded Successfully");
         } else if (state is UploadAudioFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -60,6 +60,7 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
             ),
           );
         } else if (state is UploadAudioSuccess) {
+          print("2. Audio Uploaded Successfully");
           return Scaffold(
             body: SafeArea(
               child: AudioUploadedSuccessfullyScreen(size: size),

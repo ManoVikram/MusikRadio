@@ -22,6 +22,7 @@ import '../../models/ModelProvider.dart';
 import '../../models/provider/user_data.dart';
 
 import '../../models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
+import '../../models/bloc/uploadAudio/upload_audio_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -40,50 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
     const SubscriptionScreen(),
     const AccountScreen(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      _getUserData(context);
-    });
-  }
-
-  void _getUserData(BuildContext context) async {
-    final CurrentUserData currentUserDataProvider =
-        context.read<CurrentUserData>();
-
-    AuthUser currentUser = await Amplify.Auth.getCurrentUser();
-    User currentUserData = (await Amplify.DataStore.query(User.classType,
-        where: User.EMAIL.eq(currentUser.username)))[0];
-
-    if (currentUserData.profilePictureKey != null) {
-      GetUrlResult profilePictureURL =
-          await Amplify.Storage.getUrl(key: currentUserData.profilePictureKey!);
-
-      currentUserDataProvider.setCurrentUserData = CurrentUser(
-        email: currentUser.username,
-        userID: currentUser.userId,
-        profilePictureURL: profilePictureURL.url,
-        isCreator: currentUserData.isCreator,
-        name: currentUserData.name,
-        description: currentUserData.description,
-        followers: currentUserData.followers ?? [],
-      );
-    } else {
-      currentUserDataProvider.setCurrentUserData = CurrentUser(
-        email: currentUser.username,
-        userID: currentUser.userId,
-        isCreator: currentUserData.isCreator,
-        name: currentUserData.name,
-        description: currentUserData.description,
-        followers: currentUserData.followers ?? [],
-      );
-    }
-
-    print(currentUserDataProvider.currentUser.isCreator);
-  }
 
   /* void _onTapped(int index) {
     setState(() {
@@ -165,161 +122,211 @@ class HomeScreenUI extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  Future<void> _getUserData(BuildContext context) async {
+    final CurrentUserData currentUserDataProvider =
+        context.read<CurrentUserData>();
+
+    AuthUser currentUser = await Amplify.Auth.getCurrentUser();
+    User currentUserData = (await Amplify.DataStore.query(User.classType,
+        where: User.EMAIL.eq(currentUser.username)))[0];
+
+    if (currentUserData.profilePictureKey != null) {
+      GetUrlResult profilePictureURL =
+          await Amplify.Storage.getUrl(key: currentUserData.profilePictureKey!);
+
+      currentUserDataProvider.setCurrentUserData = CurrentUser(
+        email: currentUser.username,
+        userID: currentUser.userId,
+        profilePictureURL: profilePictureURL.url,
+        isCreator: currentUserData.isCreator,
+        name: currentUserData.name,
+        description: currentUserData.description,
+        followers: currentUserData.followers ?? [],
+      );
+    } else {
+      currentUserDataProvider.setCurrentUserData = CurrentUser(
+        email: currentUser.username,
+        userID: currentUser.userId,
+        isCreator: currentUserData.isCreator,
+        name: currentUserData.name,
+        description: currentUserData.description,
+        followers: currentUserData.followers ?? [],
+      );
+    }
+
+    print(currentUserDataProvider.currentUser.isCreator);
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserProvider = context.watch<CurrentUserData>();
     return SafeArea(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    top: 20,
-                    bottom: 24,
-                  ),
-                  child: Text(
-                    "Hi User 👋,",
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-                // Should be shown only to creators
-                if (currentUserProvider.currentUser != null &&
-                    currentUserProvider.currentUser?.isCreator)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(AudioUploadScreen.routeName);
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        size: 32,
-                      ),
-                      color: Colors.deepOrangeAccent,
-                    ),
-                  ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 20.0,
-              ),
-              child: Text(
-                "Explore",
-                style: TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  height: 0,
-                ),
-              ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+      child: FutureBuilder(
+        future: _getUserData(context),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.active) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 10.0,
-                ),
-                child: Row(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    CategoryButton(
-                        text: "Music",
-                        emoji: "🎵",
-                        onTapped: () {
-                          Navigator.of(context).pushNamed(
-                            CategoryScreen.routeName,
-                            arguments: {
-                              "title": "🎵 Music",
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 20,
+                          bottom: 24,
+                        ),
+                        child: Text(
+                          "Hi User 👋,",
+                          style: TextStyle(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      // Should be shown only to creators
+                      if (currentUserProvider.currentUser?.isCreator)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(AudioUploadScreen.routeName);
                             },
-                          );
-                        }),
-                    CategoryButton(
-                      text: "Stories",
-                      emoji: "📖",
-                      onTapped: () {
-                        Navigator.of(context).pushNamed(
-                          CategoryScreen.routeName,
-                          arguments: {
-                            "title": "📖 Stories",
-                          },
-                        );
-                      },
+                            icon: const Icon(
+                              Icons.add,
+                              size: 32,
+                            ),
+                            color: Colors.deepOrangeAccent,
+                          ),
+                        ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 20.0,
                     ),
-                    CategoryButton(
-                      text: "Knowledge",
-                      emoji: "🧠",
-                      onTapped: () {
-                        Navigator.of(context).pushNamed(
-                          CategoryScreen.routeName,
-                          arguments: {
-                            "title": "🧠 Knowledge",
-                          },
-                        );
-                      },
+                    child: Text(
+                      "Explore",
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 34,
+                        fontWeight: FontWeight.bold,
+                        height: 0,
+                      ),
                     ),
-                    CategoryButton(
-                      text: "Entertainment",
-                      emoji: "😂",
-                      onTapped: () {
-                        Navigator.of(context).pushNamed(
-                          CategoryScreen.routeName,
-                          arguments: {
-                            "title": "😂 Entertainment",
-                          },
-                        );
-                      },
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 10.0,
+                      ),
+                      child: Row(
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          CategoryButton(
+                              text: "Music",
+                              emoji: "🎵",
+                              onTapped: () {
+                                Navigator.of(context).pushNamed(
+                                  CategoryScreen.routeName,
+                                  arguments: {
+                                    "title": "🎵 Music",
+                                  },
+                                );
+                              }),
+                          CategoryButton(
+                            text: "Stories",
+                            emoji: "📖",
+                            onTapped: () {
+                              Navigator.of(context).pushNamed(
+                                CategoryScreen.routeName,
+                                arguments: {
+                                  "title": "📖 Stories",
+                                },
+                              );
+                            },
+                          ),
+                          CategoryButton(
+                            text: "Knowledge",
+                            emoji: "🧠",
+                            onTapped: () {
+                              Navigator.of(context).pushNamed(
+                                CategoryScreen.routeName,
+                                arguments: {
+                                  "title": "🧠 Knowledge",
+                                },
+                              );
+                            },
+                          ),
+                          CategoryButton(
+                            text: "Entertainment",
+                            emoji: "😂",
+                            onTapped: () {
+                              Navigator.of(context).pushNamed(
+                                CategoryScreen.routeName,
+                                arguments: {
+                                  "title": "😂 Entertainment",
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 10,
+                    ),
+                    child: Text(
+                      "For You...",
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    // physics: const BouncingScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 3,
+                    itemBuilder: (BuildContext context, int index) {
+                      // return const AudioCard();
+                      return const Text("Audio Card here");
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 10,
-              ),
-              child: Text(
-                "For You...",
-                style: TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              // physics: const BouncingScrollPhysics(),
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int index) {
-                // return const AudioCard();
-                return const Text("Audio Card here");
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
+            );
+          } else {
+            return const Center(
+              child: Text("ERROR!"),
+            );
+          }
+        },
       ),
     );
   }
