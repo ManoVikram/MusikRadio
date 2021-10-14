@@ -30,11 +30,11 @@ class Audio extends Model {
   final String? _title;
   final String? _description;
   final List<UserAudio>? _likes;
-  final String? _category;
   final int? _listenings;
   final String? _audioKey;
   final String? _thumbnailKey;
   final String? _userID;
+  final AudioCategory? _category;
 
   @override
   getInstanceType() => classType;
@@ -68,14 +68,6 @@ class Audio extends Model {
     return _likes;
   }
   
-  String get category {
-    try {
-      return _category!;
-    } catch(e) {
-      throw new DataStoreException(DataStoreExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage, recoverySuggestion: DataStoreExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion, underlyingException: e.toString());
-    }
-  }
-  
   int? get listenings {
     return _listenings;
   }
@@ -100,20 +92,24 @@ class Audio extends Model {
     return _userID;
   }
   
-  const Audio._internal({required this.id, required uploadedOn, required title, description, likes, required category, listenings, required audioKey, required thumbnailKey, userID}): _uploadedOn = uploadedOn, _title = title, _description = description, _likes = likes, _category = category, _listenings = listenings, _audioKey = audioKey, _thumbnailKey = thumbnailKey, _userID = userID;
+  AudioCategory? get category {
+    return _category;
+  }
   
-  factory Audio({String? id, required TemporalDateTime uploadedOn, required String title, String? description, List<UserAudio>? likes, required String category, int? listenings, required String audioKey, required String thumbnailKey, String? userID}) {
+  const Audio._internal({required this.id, required uploadedOn, required title, description, likes, listenings, required audioKey, required thumbnailKey, userID, category}): _uploadedOn = uploadedOn, _title = title, _description = description, _likes = likes, _listenings = listenings, _audioKey = audioKey, _thumbnailKey = thumbnailKey, _userID = userID, _category = category;
+  
+  factory Audio({String? id, required TemporalDateTime uploadedOn, required String title, String? description, List<UserAudio>? likes, int? listenings, required String audioKey, required String thumbnailKey, String? userID, AudioCategory? category}) {
     return Audio._internal(
       id: id == null ? UUID.getUUID() : id,
       uploadedOn: uploadedOn,
       title: title,
       description: description,
       likes: likes != null ? List<UserAudio>.unmodifiable(likes) : likes,
-      category: category,
       listenings: listenings,
       audioKey: audioKey,
       thumbnailKey: thumbnailKey,
-      userID: userID);
+      userID: userID,
+      category: category);
   }
   
   bool equals(Object other) {
@@ -129,11 +125,11 @@ class Audio extends Model {
       _title == other._title &&
       _description == other._description &&
       DeepCollectionEquality().equals(_likes, other._likes) &&
-      _category == other._category &&
       _listenings == other._listenings &&
       _audioKey == other._audioKey &&
       _thumbnailKey == other._thumbnailKey &&
-      _userID == other._userID;
+      _userID == other._userID &&
+      _category == other._category;
   }
   
   @override
@@ -148,28 +144,28 @@ class Audio extends Model {
     buffer.write("uploadedOn=" + (_uploadedOn != null ? _uploadedOn!.format() : "null") + ", ");
     buffer.write("title=" + "$_title" + ", ");
     buffer.write("description=" + "$_description" + ", ");
-    buffer.write("category=" + "$_category" + ", ");
     buffer.write("listenings=" + (_listenings != null ? _listenings!.toString() : "null") + ", ");
     buffer.write("audioKey=" + "$_audioKey" + ", ");
     buffer.write("thumbnailKey=" + "$_thumbnailKey" + ", ");
-    buffer.write("userID=" + "$_userID");
+    buffer.write("userID=" + "$_userID" + ", ");
+    buffer.write("category=" + (_category != null ? _category!.toString() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Audio copyWith({String? id, TemporalDateTime? uploadedOn, String? title, String? description, List<UserAudio>? likes, String? category, int? listenings, String? audioKey, String? thumbnailKey, String? userID}) {
+  Audio copyWith({String? id, TemporalDateTime? uploadedOn, String? title, String? description, List<UserAudio>? likes, int? listenings, String? audioKey, String? thumbnailKey, String? userID, AudioCategory? category}) {
     return Audio(
       id: id ?? this.id,
       uploadedOn: uploadedOn ?? this.uploadedOn,
       title: title ?? this.title,
       description: description ?? this.description,
       likes: likes ?? this.likes,
-      category: category ?? this.category,
       listenings: listenings ?? this.listenings,
       audioKey: audioKey ?? this.audioKey,
       thumbnailKey: thumbnailKey ?? this.thumbnailKey,
-      userID: userID ?? this.userID);
+      userID: userID ?? this.userID,
+      category: category ?? this.category);
   }
   
   Audio.fromJson(Map<String, dynamic> json)  
@@ -183,14 +179,16 @@ class Audio extends Model {
           .map((e) => UserAudio.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _category = json['category'],
       _listenings = json['listenings'],
       _audioKey = json['audioKey'],
       _thumbnailKey = json['thumbnailKey'],
-      _userID = json['userID'];
+      _userID = json['userID'],
+      _category = json['category']?['serializedData'] != null
+        ? AudioCategory.fromJson(new Map<String, dynamic>.from(json['category']['serializedData']))
+        : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'uploadedOn': _uploadedOn?.format(), 'title': _title, 'description': _description, 'likes': _likes?.map((e) => e?.toJson())?.toList(), 'category': _category, 'listenings': _listenings, 'audioKey': _audioKey, 'thumbnailKey': _thumbnailKey, 'userID': _userID
+    'id': id, 'uploadedOn': _uploadedOn?.format(), 'title': _title, 'description': _description, 'likes': _likes?.map((e) => e?.toJson())?.toList(), 'listenings': _listenings, 'audioKey': _audioKey, 'thumbnailKey': _thumbnailKey, 'userID': _userID, 'category': _category?.toJson()
   };
 
   static final QueryField ID = QueryField(fieldName: "audio.id");
@@ -200,11 +198,13 @@ class Audio extends Model {
   static final QueryField LIKES = QueryField(
     fieldName: "likes",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (UserAudio).toString()));
-  static final QueryField CATEGORY = QueryField(fieldName: "category");
   static final QueryField LISTENINGS = QueryField(fieldName: "listenings");
   static final QueryField AUDIOKEY = QueryField(fieldName: "audioKey");
   static final QueryField THUMBNAILKEY = QueryField(fieldName: "thumbnailKey");
   static final QueryField USERID = QueryField(fieldName: "userID");
+  static final QueryField CATEGORY = QueryField(
+    fieldName: "category",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (AudioCategory).toString()));
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Audio";
     modelSchemaDefinition.pluralName = "Audio";
@@ -248,12 +248,6 @@ class Audio extends Model {
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Audio.CATEGORY,
-      isRequired: true,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Audio.LISTENINGS,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.int)
@@ -275,6 +269,13 @@ class Audio extends Model {
       key: Audio.USERID,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+      key: Audio.CATEGORY,
+      isRequired: false,
+      targetName: "audioCategoryId",
+      ofModelName: (AudioCategory).toString()
     ));
   });
 }

@@ -1,14 +1,19 @@
+type AudioCategory @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+}
+
 type Audio @model @auth(rules: [{allow: public}]) @key(name: "byUser", fields: ["userID"]) {
   id: ID!
   uploadedOn: AWSDateTime!
   title: String!
   description: String
   likes: [UserAudio] @connection(keyName: "byAudio", fields: ["id"])
-  category: String!
   listenings: Int
   audioKey: String!
   thumbnailKey: String!
   userID: ID
+  category: AudioCategory @connection
 }
 
 type User @model @auth(rules: [{allow: public}]) {

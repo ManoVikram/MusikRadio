@@ -437,13 +437,13 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                                   ),
                                 );
                               } else {
-                                uploadAudioBloc.add(UploadAudio(
+                                /* uploadAudioBloc.add(UploadAudio(
                                   title: _titleController.text,
                                   description: _descriptionController.text,
                                   category: categorySelected!,
                                   audioResult: audioResult!,
                                   thumbnailResult: thumbnailResult!,
-                                ));
+                                )); */
                               }
                             },
                             style: ElevatedButton.styleFrom(

@@ -122,7 +122,8 @@ class HomeScreenUI extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  Future<void> _getUserData(BuildContext context) async {
+  Future<List<AudioCategory>> _getUserAndCategoryData(
+      BuildContext context) async {
     final CurrentUserData currentUserDataProvider =
         context.read<CurrentUserData>();
 
@@ -155,178 +156,225 @@ class HomeScreenUI extends StatelessWidget {
     }
 
     print(currentUserDataProvider.currentUser.isCreator);
+
+    final List<AudioCategory> allCategories =
+        await Amplify.DataStore.query(AudioCategory.classType);
+
+    print("*");
+    print(allCategories);
+    print("*");
+
+    return allCategories;
   }
 
   @override
   Widget build(BuildContext context) {
     final currentUserProvider = context.watch<CurrentUserData>();
-    return SafeArea(
-      child: FutureBuilder(
-        future: _getUserData(context),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              snapshot.connectionState == ConnectionState.active) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 20,
-                          bottom: 24,
-                        ),
-                        child: Text(
-                          "Hi User 👋,",
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                      // Should be shown only to creators
-                      if (currentUserProvider.currentUser?.isCreator)
+    return Scaffold(
+      body: SafeArea(
+        child: FutureBuilder<List<AudioCategory>>(
+          future: _getUserAndCategoryData(context),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.active) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              print(snapshot.data);
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(AudioUploadScreen.routeName);
-                            },
-                            icon: const Icon(
-                              Icons.add,
-                              size: 32,
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            top: 20,
+                            bottom: 24,
+                          ),
+                          child: Text(
+                            "Hi User 👋,",
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
                             ),
-                            color: Colors.deepOrangeAccent,
                           ),
                         ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 20.0,
+                        // Should be shown only to creators
+                        if (currentUserProvider.currentUser?.isCreator)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(AudioUploadScreen.routeName);
+                              },
+                              icon: const Icon(
+                                Icons.add,
+                                size: 32,
+                              ),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                          ),
+                      ],
                     ),
-                    child: Text(
-                      "Explore",
-                      style: TextStyle(
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Padding(
+                    Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16.0,
-                        vertical: 10.0,
+                        vertical: 20.0,
                       ),
-                      child: Row(
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          CategoryButton(
-                              text: "Music",
-                              emoji: "🎵",
+                      child: Text(
+                        "Explore",
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                    /* SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 10.0,
+                        ),
+                        child: Row(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            CategoryButton(
+                                text: "Music",
+                                emoji: "🎵",
+                                onTapped: () {
+                                  Navigator.of(context).pushNamed(
+                                    CategoryScreen.routeName,
+                                    arguments: {
+                                      "title": "🎵 Music",
+                                    },
+                                  );
+                                }),
+                            CategoryButton(
+                              text: "Stories",
+                              emoji: "📖",
                               onTapped: () {
                                 Navigator.of(context).pushNamed(
                                   CategoryScreen.routeName,
                                   arguments: {
-                                    "title": "🎵 Music",
+                                    "title": "📖 Stories",
                                   },
                                 );
-                              }),
-                          CategoryButton(
-                            text: "Stories",
-                            emoji: "📖",
-                            onTapped: () {
-                              Navigator.of(context).pushNamed(
-                                CategoryScreen.routeName,
-                                arguments: {
-                                  "title": "📖 Stories",
-                                },
-                              );
-                            },
-                          ),
-                          CategoryButton(
-                            text: "Knowledge",
-                            emoji: "🧠",
-                            onTapped: () {
-                              Navigator.of(context).pushNamed(
-                                CategoryScreen.routeName,
-                                arguments: {
-                                  "title": "🧠 Knowledge",
-                                },
-                              );
-                            },
-                          ),
-                          CategoryButton(
-                            text: "Entertainment",
-                            emoji: "😂",
-                            onTapped: () {
-                              Navigator.of(context).pushNamed(
-                                CategoryScreen.routeName,
-                                arguments: {
-                                  "title": "😂 Entertainment",
-                                },
-                              );
-                            },
-                          ),
-                        ],
+                              },
+                            ),
+                            CategoryButton(
+                              text: "Knowledge",
+                              emoji: "🧠",
+                              onTapped: () {
+                                Navigator.of(context).pushNamed(
+                                  CategoryScreen.routeName,
+                                  arguments: {
+                                    "title": "🧠 Knowledge",
+                                  },
+                                );
+                              },
+                            ),
+                            CategoryButton(
+                              text: "Entertainment",
+                              emoji: "😂",
+                              onTapped: () {
+                                Navigator.of(context).pushNamed(
+                                  CategoryScreen.routeName,
+                                  arguments: {
+                                    "title": "😂 Entertainment",
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ), */
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: snapshot.data?.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: index == 0
+                                ? const EdgeInsets.only(
+                                    left: 16.0,
+                                  )
+                                : (index == snapshot.data!.length - 1
+                                    ? const EdgeInsets.only(
+                                        right: 16.0,
+                                      )
+                                    : const EdgeInsets.all(0)),
+                            child: CategoryButton(
+                              text: snapshot.data![index].title.substring(2),
+                              emoji:
+                                  snapshot.data![index].title.substring(0, 2),
+                              onTapped: () {
+                                Navigator.of(context).pushNamed(
+                                  CategoryScreen.routeName,
+                                  arguments: {
+                                    "title": snapshot.data![index].title,
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 10,
-                    ),
-                    child: Text(
-                      "For You...",
-                      style: TextStyle(
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 10,
+                      ),
+                      child: Text(
+                        "For You...",
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    // physics: const BouncingScrollPhysics(),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      // return const AudioCard();
-                      return const Text("Audio Card here");
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return const Center(
-              child: Text("ERROR!"),
-            );
-          }
-        },
+                    ListView.builder(
+                      shrinkWrap: true,
+                      // physics: const BouncingScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 3,
+                      itemBuilder: (BuildContext context, int index) {
+                        // return const AudioCard();
+                        return const Text("Audio Card here");
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return const Center(
+                child: Text("ERROR!"),
+              );
+            }
+          },
+        ),
       ),
     );
   }

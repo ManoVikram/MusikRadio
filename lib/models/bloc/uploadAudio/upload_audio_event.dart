@@ -10,7 +10,7 @@ abstract class UploadAudioEvent extends Equatable {
 class UploadAudio extends UploadAudioEvent {
   final String title;
   final String description;
-  final String category;
+  final AudioCategory category;
   final FilePickerResult audioResult;
   final XFile? thumbnailResult;
 

@@ -43,7 +43,7 @@ class CategoryButton extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              width: 10,
+              width: 7,
             ),
             Text(
               text,
