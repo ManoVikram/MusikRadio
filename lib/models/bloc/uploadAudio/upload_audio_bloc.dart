@@ -49,12 +49,17 @@ class UploadAudioBloc extends Bloc<UploadAudioEvent, UploadAudioState> {
           where: User.EMAIL.eq(userRes.username),
         ))[0];
 
+        AudioCategory category = (await Amplify.DataStore.query(
+          AudioCategory.classType,
+          where: AudioCategory.TITLE.eq(event.category),
+        ))[0];
+
         if (user.isCreator) {
           Audio audio = Audio(
             uploadedOn: TemporalDateTime(DateTime.now().toLocal()),
             title: event.title,
             description: event.description,
-            category: event.category,
+            category: category,
             audioKey: audioResult.key,
             thumbnailKey: thumbnailResult.key,
             listenings: 0,

@@ -157,12 +157,8 @@ class HomeScreenUI extends StatelessWidget {
 
     print(currentUserDataProvider.currentUser.isCreator);
 
-    final List<AudioCategory> allCategories =
+    List<AudioCategory> allCategories =
         await Amplify.DataStore.query(AudioCategory.classType);
-
-    print("*");
-    print(allCategories);
-    print("*");
 
     return allCategories;
   }
@@ -304,7 +300,7 @@ class HomeScreenUI extends StatelessWidget {
                       ),
                     ), */
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.06,
+                      height: MediaQuery.of(context).size.height * 0.055,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
@@ -315,12 +311,17 @@ class HomeScreenUI extends StatelessWidget {
                             padding: index == 0
                                 ? const EdgeInsets.only(
                                     left: 16.0,
+                                    top: 2.5,
+                                    bottom: 2.5,
                                   )
                                 : (index == snapshot.data!.length - 1
                                     ? const EdgeInsets.only(
                                         right: 16.0,
+                                        top: 2.5,
+                                        bottom: 2.5,
                                       )
-                                    : const EdgeInsets.all(0)),
+                                    : const EdgeInsets.symmetric(
+                                        vertical: 2.5)),
                             child: CategoryButton(
                               text: snapshot.data![index].title.substring(2),
                               emoji:
