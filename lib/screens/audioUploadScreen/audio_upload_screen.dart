@@ -1,17 +1,14 @@
 import 'dart:io';
 
-import 'package:amplify_flutter/amplify.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-import '../../models/ModelProvider.dart';
-
 import '../../models/bloc/uploadAudio/upload_audio_bloc.dart';
+import '../../models/bloc/fetchCategories/fetch_categories_bloc.dart';
 
 class AudioUploadScreen extends StatefulWidget {
   const AudioUploadScreen({Key? key}) : super(key: key);
@@ -32,12 +29,12 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
   FilePickerResult? audioResult;
   XFile? thumbnailResult;
 
-  String? categorySelected;
-  List<String> categoryTitles = [];
+  String categorySelected = "📖 Stories";
+  // List<String> categoryTitles = [];
   String? audioFileName = "Select Audio";
   bool thumbnailSelected = false;
 
-  Future<List<AudioCategory>> _fetchAllCategories() async {
+  /* Future<List<AudioCategory>> _fetchAllCategories() async {
     final List<AudioCategory> allCategories =
         await Amplify.DataStore.query(AudioCategory.classType);
 
@@ -49,7 +46,7 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
     }
 
     return allCategories;
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -87,15 +84,15 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
         } else {
           return Scaffold(
             body: SafeArea(
-              child: FutureBuilder<List<AudioCategory>>(
-                future: _fetchAllCategories(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.active) {
+              child: BlocBuilder<FetchCategoriesBloc, FetchCategoriesState>(
+                builder: (context, state) {
+                  if (state is FetchCategoriesInProgress) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (snapshot.connectionState == ConnectionState.done) {
+                  } else if (state is FetchCategoriesSuccess) {
+                    // String categorySelected = state.allCategoryTitles[0];
+
                     return SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Padding(
@@ -194,25 +191,25 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                             ),
                             // Show this only when the audio is uploading
                             /* Center(
-                          child: CircularPercentIndicator(
-                            radius: 120,
-                            lineWidth: 12.0,
-                            animation: true,
-                            percent: 0.3,
-                            center: Text(
-                              // Change the percent based on the amount of audio size uploaded currently
-                              // Maybe display 'Done' when upload complete
-                              "30%",
-                              style: TextStyle(
-                                fontFamily: GoogleFonts.roboto().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            circularStrokeCap: CircularStrokeCap.round,
-                            progressColor: Colors.greenAccent[700],
-                          ),
-                        ), */
+                                        child: CircularPercentIndicator(
+                                          radius: 120,
+                                          lineWidth: 12.0,
+                                          animation: true,
+                                          percent: 0.3,
+                                          center: Text(
+                                            // Change the percent based on the amount of audio size uploaded currently
+                                            // Maybe display 'Done' when upload complete
+                                            "30%",
+                                            style: TextStyle(
+                                              fontFamily: GoogleFonts.roboto().fontFamily,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          circularStrokeCap: CircularStrokeCap.round,
+                                          progressColor: Colors.greenAccent[700],
+                                        ),
+                                      ), */
                             const SizedBox(
                               height: 20,
                             ),
@@ -316,7 +313,7 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                                 value: categorySelected,
                                 onChanged: (String? category) {
                                   print(category);
-                                  print(categoryTitles);
+                                  print(state.allCategoryTitles);
                                   setState(() {
                                     categorySelected = category!;
                                     print(categorySelected);
@@ -333,12 +330,13 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                                   color: Colors.black,
                                 ),
                                 items: /* [
-                                  "🧠 Knowledge",
-                                  "🎵 Music",
-                                  "📖 Stories",
-                                  "😂 Entertainment",
-                                ] */
-                                    categoryTitles.map((String categoryValue) {
+                                                "🧠 Knowledge",
+                                                "🎵 Music",
+                                                "📖 Stories",
+                                                "😂 Entertainment",
+                                              ] */
+                                    state.allCategoryTitles
+                                        .map((String categoryValue) {
                                   return DropdownMenuItem(
                                     value: categoryValue,
                                     child: Text(categoryValue),
@@ -416,33 +414,33 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                                 // I don't find any use for this 'Cancel' button
                                 // Maybe I might use it later
                                 /* Expanded(
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {},
-                                          style: ElevatedButton.styleFrom(
-                                            primary: Colors.redAccent,
-                                            onPrimary: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12),
-                                          ),
-                                          icon: const Icon(Icons.close),
-                                          label: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                              fontFamily:
-                                                  GoogleFonts.poppins().fontFamily,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ), */
+                                                      child: ElevatedButton.icon(
+                                                        onPressed: () {},
+                                                        style: ElevatedButton.styleFrom(
+                                                          primary: Colors.redAccent,
+                                                          onPrimary: Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(20),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(
+                                                              vertical: 12),
+                                                        ),
+                                                        icon: const Icon(Icons.close),
+                                                        label: Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                GoogleFonts.poppins().fontFamily,
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ), */
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () {
@@ -481,7 +479,7 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                                           title: _titleController.text,
                                           description:
                                               _descriptionController.text,
-                                          category: categorySelected!,
+                                          category: categorySelected,
                                           audioResult: audioResult!,
                                           thumbnailResult: thumbnailResult!,
                                         ));
@@ -516,7 +514,7 @@ class _AudioUploadScreenState extends State<AudioUploadScreen> {
                     );
                   } else {
                     return const Center(
-                      child: Text("ERROR!"),
+                      child: Text("Error!!"),
                     );
                   }
                 },

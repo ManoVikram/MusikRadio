@@ -23,6 +23,7 @@ import '../../models/provider/user_data.dart';
 
 import '../../models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 import '../../models/bloc/uploadAudio/upload_audio_bloc.dart';
+import '../../models/bloc/fetchCategories/fetch_categories_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -166,6 +167,9 @@ class HomeScreenUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUserProvider = context.watch<CurrentUserData>();
+
+    final fetchAllCategoriesBloc = context.watch<FetchCategoriesBloc>();
+
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<List<AudioCategory>>(
@@ -210,6 +214,8 @@ class HomeScreenUI extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: IconButton(
                               onPressed: () {
+                                fetchAllCategoriesBloc.add(const FetchCategories());
+                                
                                 Navigator.of(context)
                                     .pushNamed(AudioUploadScreen.routeName);
                               },

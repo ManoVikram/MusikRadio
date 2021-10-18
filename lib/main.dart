@@ -36,6 +36,7 @@ import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_n
 import './models/bloc/uploadAudio/upload_audio_bloc.dart';
 import './models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 import './models/bloc/updateUserData/update_user_data_bloc.dart';
+import './models/bloc/fetchCategories/fetch_categories_bloc.dart';
 
 import './models/provider/user_data.dart';
 
@@ -108,6 +109,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<UpdateUserDataBloc>(
           create: (context) => UpdateUserDataBloc(),
+        ),
+        BlocProvider<FetchCategoriesBloc>(
+          create: (context) => FetchCategoriesBloc(),
         ),
       ],
       child: MultiProvider(
