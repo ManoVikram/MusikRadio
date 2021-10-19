@@ -63,7 +63,7 @@ class UploadAudioBloc extends Bloc<UploadAudioEvent, UploadAudioState> {
             audioKey: audioResult.key,
             thumbnailKey: thumbnailResult.key,
             listenings: 0,
-            userID: userRes.userId,
+            userID: user.id,
           );
 
           try {

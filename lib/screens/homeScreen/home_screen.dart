@@ -83,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
             currentUserDataProvider.setAudioList = uploadedAudio;
 
             fetchUrlBloc.add(FetchCurrentCreatorContentURL(
-                uploadedAudio:
-                    currentUserDataProvider.currentUser.audioUploads));
+              uploadedAudio: currentUserDataProvider.currentUser.audioUploads,
+            ));
           }
 
           setState(() {
@@ -138,7 +138,7 @@ class HomeScreenUI extends StatelessWidget {
 
       currentUserDataProvider.setCurrentUserData = CurrentUser(
         email: currentUser.username,
-        userID: currentUser.userId,
+        userID: currentUserData.id,
         profilePictureURL: profilePictureURL.url,
         isCreator: currentUserData.isCreator,
         name: currentUserData.name,
@@ -148,7 +148,7 @@ class HomeScreenUI extends StatelessWidget {
     } else {
       currentUserDataProvider.setCurrentUserData = CurrentUser(
         email: currentUser.username,
-        userID: currentUser.userId,
+        userID: currentUserData.id,
         isCreator: currentUserData.isCreator,
         name: currentUserData.name,
         description: currentUserData.description,
@@ -214,8 +214,9 @@ class HomeScreenUI extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: IconButton(
                               onPressed: () {
-                                fetchAllCategoriesBloc.add(const FetchCategories());
-                                
+                                fetchAllCategoriesBloc
+                                    .add(const FetchCategories());
+
                                 Navigator.of(context)
                                     .pushNamed(AudioUploadScreen.routeName);
                               },
