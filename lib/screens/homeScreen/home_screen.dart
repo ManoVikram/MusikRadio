@@ -24,6 +24,7 @@ import '../../models/provider/user_data.dart';
 import '../../models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 import '../../models/bloc/uploadAudio/upload_audio_bloc.dart';
 import '../../models/bloc/fetchCategories/fetch_categories_bloc.dart';
+import '../../models/bloc/fetchAudio/fetch_audio_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -169,6 +170,8 @@ class HomeScreenUI extends StatelessWidget {
     final currentUserProvider = context.watch<CurrentUserData>();
 
     final fetchAllCategoriesBloc = context.watch<FetchCategoriesBloc>();
+
+    final fetchAudioBloc = context.watch<FetchAudioBloc>();
 
     return Scaffold(
       body: SafeArea(
@@ -334,6 +337,8 @@ class HomeScreenUI extends StatelessWidget {
                               emoji:
                                   snapshot.data![index].title.substring(0, 2),
                               onTapped: () {
+                                fetchAudioBloc.add(FetchCategoryAudio(
+                                    category: snapshot.data![index]));
                                 Navigator.of(context).pushNamed(
                                   CategoryScreen.routeName,
                                   arguments: {
@@ -352,7 +357,7 @@ class HomeScreenUI extends StatelessWidget {
                         vertical: 10,
                       ),
                       child: Text(
-                        "For You...",
+                        "Latest...",
                         style: TextStyle(
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontSize: 26,

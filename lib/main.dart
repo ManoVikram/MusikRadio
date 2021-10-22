@@ -37,6 +37,7 @@ import './models/bloc/uploadAudio/upload_audio_bloc.dart';
 import './models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 import './models/bloc/updateUserData/update_user_data_bloc.dart';
 import './models/bloc/fetchCategories/fetch_categories_bloc.dart';
+import './models/bloc/fetchAudio/fetch_audio_bloc.dart';
 
 import './models/provider/user_data.dart';
 
@@ -113,6 +114,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<FetchCategoriesBloc>(
           create: (context) => FetchCategoriesBloc(),
         ),
+        BlocProvider<FetchAudioBloc>(
+          create: (context) => FetchAudioBloc(),
+        ),
       ],
       child: MultiProvider(
         providers: [
@@ -180,7 +184,7 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
   }
 
   Future<bool> _fetchSession() async {
-    final currentUserDataProvider = context.watch<CurrentUserData>();
+    // final currentUserDataProvider = context.watch<CurrentUserData>();
     try {
       AuthSession res = await Amplify.Auth.fetchAuthSession(
         options: CognitoSessionOptions(getAWSCredentials: true),

@@ -89,14 +89,21 @@ class FetchAudioBloc extends Bloc<FetchAudioEvent, FetchAudioState> {
           where: User.ID.eq(categoryAudio[i].userID),
         ))[0];
 
-        final GetUrlResult profilePictureResullt =
-            await Amplify.Storage.getUrl(key: user.profilePictureKey!);
+        if (user.profilePictureKey != null) {
+          final GetUrlResult profilePictureResullt =
+              await Amplify.Storage.getUrl(key: user.profilePictureKey!);
 
-        contentUrl.add({
-          "audioURL": audioUrlResult.url,
-          "thumbnailURL": thumbnailUrlResult.url,
-          "profilePictureURL": profilePictureResullt.url,
-        });
+          contentUrl.add({
+            "audioURL": audioUrlResult.url,
+            "thumbnailURL": thumbnailUrlResult.url,
+            "profilePictureURL": profilePictureResullt.url,
+          });
+        } else {
+          contentUrl.add({
+            "audioURL": audioUrlResult.url,
+            "thumbnailURL": thumbnailUrlResult.url,
+          });
+        }
 
         channelNames.add(user.name!);
       } on StorageException catch (error) {
