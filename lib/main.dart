@@ -1,5 +1,6 @@
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -117,6 +118,10 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<FetchAudioBloc>(
           create: (context) => FetchAudioBloc(),
         ),
+        /* BlocProvider(
+          create: (context) => FetchAudioBloc()..add(const FetchAllAudio()),
+          child: Container(),
+        ), */
       ],
       child: MultiProvider(
         providers: [
@@ -178,9 +183,16 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
   SharedPreferences? _prefs;
   bool _seen = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> checkAlreadySeen() async {
     _prefs = await SharedPreferences.getInstance();
     _seen = (_prefs?.getBool("seen") ?? false);
+
+    BlocProvider.of<FetchAudioBloc>(context).add(const FetchAllAudio());
   }
 
   Future<bool> _fetchSession() async {

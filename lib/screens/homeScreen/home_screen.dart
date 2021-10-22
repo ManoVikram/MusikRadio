@@ -365,14 +365,39 @@ class HomeScreenUI extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      // physics: const BouncingScrollPhysics(),
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 3,
-                      itemBuilder: (BuildContext context, int index) {
-                        // return const AudioCard();
-                        return const Text("Audio Card here");
+                    BlocBuilder<FetchAudioBloc, FetchAudioState>(
+                      builder: (context, state) {
+                        print(state);
+                        if (state is FetchAudioInProgress) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is FetchAudioSuccess) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            // physics: const BouncingScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: state.audioData.audio.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return AudioCard(
+                                channelName: state.audioData.channelName[index],
+                                audio: state.audioData.audio[index],
+                                url: state.audioData.url[index],
+                                profilePictureUrl: state.audioData.url[index]
+                                    ["profilePictureURL"],
+                              );
+                              // return const Text("Audio Card here");
+                            },
+                          );
+                        } else if (state is FetchAudioFailure) {
+                          return Center(
+                            child: Text("Error: ${state.error}"),
+                          );
+                        } else {
+                          return const Center(
+                            child: Text("Error"),
+                          );
+                        }
                       },
                     ),
                     const SizedBox(
