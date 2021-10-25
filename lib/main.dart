@@ -1,5 +1,6 @@
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -34,6 +35,10 @@ import './models/bloc/userAuthentication/signInUser/sign_in_user_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/forgotPasswordEmail/forgot_password_bloc.dart';
 import './models/bloc/userAuthentication/forgotPassword/newPasswordReset/reset_new_password_bloc.dart';
 import './models/bloc/uploadAudio/upload_audio_bloc.dart';
+import './models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
+import './models/bloc/updateUserData/update_user_data_bloc.dart';
+import './models/bloc/fetchCategories/fetch_categories_bloc.dart';
+import './models/bloc/fetchAudio/fetch_audio_bloc.dart';
 
 import './models/provider/user_data.dart';
 
@@ -59,6 +64,7 @@ class _MyAppState extends State<MyApp> {
         AmplifyDataStore(modelProvider: ModelProvider.instance);
     AmplifyAPI apiPlugin = AmplifyAPI();
     AmplifyStorageS3 storagePlugin = AmplifyStorageS3();
+
     await Amplify.addPlugins([
       authPlugin,
       dataStorePlugin,
@@ -79,6 +85,7 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<RegisterNewUserBloc>(
@@ -96,9 +103,25 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ResetNewPasswordBloc>(
           create: (context) => ResetNewPasswordBloc(),
         ),
-        BlocProvider<UploadAudioBloc>(
+        /* BlocProvider<UploadAudioBloc>(
           create: (context) => UploadAudioBloc(),
+        ), */
+        BlocProvider<FetchAudioThumbnailUrlBloc>(
+          create: (context) => FetchAudioThumbnailUrlBloc(),
         ),
+        BlocProvider<UpdateUserDataBloc>(
+          create: (context) => UpdateUserDataBloc(),
+        ),
+        BlocProvider<FetchCategoriesBloc>(
+          create: (context) => FetchCategoriesBloc(),
+        ),
+        BlocProvider<FetchAudioBloc>(
+          create: (context) => FetchAudioBloc(),
+        ),
+        /* BlocProvider(
+          create: (context) => FetchAudioBloc()..add(const FetchAllAudio()),
+          child: Container(),
+        ), */
       ],
       child: MultiProvider(
         providers: [
@@ -130,8 +153,13 @@ class _MyAppState extends State<MyApp> {
                 const SubscriptionScreen(),
             AccountScreen.routeName: (context) => const AccountScreen(),
             EditAccountDetilsScreen.routeName: (context) =>
-                EditAccountDetilsScreen(),
-            AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
+                const EditAccountDetilsScreen(),
+            // AudioUploadScreen.routeName: (context) => const AudioUploadScreen(),
+            AudioUploadScreen.routeName: (context) =>
+                BlocProvider<UploadAudioBloc>(
+                  create: (context) => UploadAudioBloc(),
+                  child: const AudioUploadScreen(),
+                ),
             PlayingAudioScreen.routeName: (context) =>
                 const PlayingAudioScreen(),
           },
@@ -155,25 +183,54 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
   SharedPreferences? _prefs;
   bool _seen = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> checkAlreadySeen() async {
     _prefs = await SharedPreferences.getInstance();
     _seen = (_prefs?.getBool("seen") ?? false);
+
+    BlocProvider.of<FetchAudioBloc>(context).add(const FetchAllAudio());
   }
 
   Future<bool> _fetchSession() async {
-    final currentUserDataProvider = context.watch<CurrentUserData>();
+    // final currentUserDataProvider = context.watch<CurrentUserData>();
     try {
       AuthSession res = await Amplify.Auth.fetchAuthSession(
         options: CognitoSessionOptions(getAWSCredentials: true),
       );
 
-      AuthUser currentUser = await Amplify.Auth.getCurrentUser();
+      /* AuthUser currentUser = await Amplify.Auth.getCurrentUser();
       User currentUserData = (await Amplify.DataStore.query(User.classType,
           where: User.EMAIL.eq(currentUser.username)))[0];
-      currentUserDataProvider.setCurrentUserData = CurrentUser(
-        email: currentUser.username,
-        isCreator: currentUserData.isCreator,
-      );
+
+      if (currentUserData.profilePictureKey != null) {
+        GetUrlResult profilePictureURL = await Amplify.Storage.getUrl(
+            key: currentUserData.profilePictureKey!);
+
+        currentUserDataProvider.setCurrentUserData = CurrentUser(
+          email: currentUser.username,
+          userID: currentUser.userId,
+          profilePictureURL: profilePictureURL.url,
+          isCreator: currentUserData.isCreator,
+          name: currentUserData.name,
+          description: currentUserData.description,
+          followers: currentUserData.followers ?? [],
+        );
+      } else {
+        currentUserDataProvider.setCurrentUserData = CurrentUser(
+          email: currentUser.username,
+          userID: currentUser.userId,
+          isCreator: currentUserData.isCreator,
+          name: currentUserData.name,
+          description: currentUserData.description,
+          followers: currentUserData.followers ?? [],
+        );
+      }
+
+      print(currentUserDataProvider.currentUser.isCreator); */
 
       return res.isSignedIn;
     } on AuthException catch (error) {

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../editAccountDetilsScreen/edit_account_details_screen.dart';
+
 import '../../widgets/audio_card.dart';
+
+import '../../models/provider/user_data.dart';
+
+import '../../models/bloc/featchAudioThumbnailURL/fetch_audio_thumbnail_url_bloc.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({Key? key}) : super(key: key);
@@ -11,25 +18,31 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CurrentUser currentUserData =
+        context.watch<CurrentUserData>().currentUser;
+
     return Scaffold(
       appBar: AppBar(
         // Show this back button only while viewing others' account
         // and not while viewing our own account
-        leading: IconButton(
+        /* leading: IconButton(
           onPressed: () {},
           icon: const Icon(
             Icons.arrow_back_ios_new,
           ),
           color: Colors.black,
-        ),
+        ), */
         actions: [
-          IconButton(
-            onPressed: () {},
+          // Uncomment the below icon while implementing the feature
+          /* IconButton(
+            onPressed: () {
+              Share.share("");
+            },
             icon: const Icon(
               Icons.share,
             ),
             color: Colors.black,
-          ),
+          ), */
           // Show this edit button only while viewing our account
           // and not while viewing others' account
           IconButton(
@@ -65,15 +78,20 @@ class AccountScreen extends StatelessWidget {
                     Container(
                       height: 100,
                       width: 100,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.orange,
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          // If the user haven't set any image, show a default image here
-                          // Use eitther the AssetImage or NetworkImage for the default one
-                          image: NetworkImage(""),
-                          fit: BoxFit.cover,
-                        ),
+                        image: currentUserData.profilePictureURL == null
+                            ? const DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/DefaultProfilePicture.jpg"),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(
+                                    currentUserData.profilePictureURL!),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -85,7 +103,7 @@ class AccountScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Name",
+                            currentUserData.name ?? currentUserData.email,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontFamily: GoogleFonts.poppins().fontFamily,
@@ -94,7 +112,7 @@ class AccountScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Bio Data/Description",
+                            currentUserData.description ?? "Hey there!",
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -150,20 +168,21 @@ class AccountScreen extends StatelessWidget {
                             fontFamily: GoogleFonts.roboto().fontFamily,
                             color: Colors.black,
                           ),
-                          children: const [
+                          children: [
                             // Check this to convert number to human readable format:
                             // https://stackoverflow.com/questions/54690790/convert-a-number-to-human-readable-format-e-g-1-5k-5m-1b-in-dart/54691084
                             TextSpan(
-                              text: "1234\n",
+                              text: "${currentUserData.followers!.length}\n",
                               style: TextStyle(
                                 fontSize: 22,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            TextSpan(
+                            const TextSpan(
                               text: "Followers",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                               ),
                             ),
                           ],
@@ -178,22 +197,55 @@ class AccountScreen extends StatelessWidget {
                 thickness: 1,
               ),
               // If the user haven't uploaded any content display this
-              /* Text(
-                "You haven't uploaded any content yet!",
-                style: TextStyle(
-                  fontFamily: GoogleFonts.roboto().fontFamily,
-                  color: Colors.grey,
+              if (currentUserData.audioUploads != null &&
+                  currentUserData.audioUploads!.isEmpty)
+                Center(
+                  child: Text(
+                    "You haven't uploaded any content yet!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
-              ), */
+              if (currentUserData.audioUploads == null)
+                Center(
+                  child: Text(
+                    "You are not a creator yet!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.roboto().fontFamily,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
               // Else display this
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  return const AudioCard();
-                },
-              ),
+              if (currentUserData.audioUploads != null)
+                BlocBuilder<FetchAudioThumbnailUrlBloc, FetchURLState>(
+                  builder: (context, state) {
+                    return state is FetchURLInProgress
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: (state as FetchURLSuccess)
+                                .uploadedContentUrl
+                                .length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return AudioCard(
+                                channelName: currentUserData.name!,
+                                profilePictureUrl:
+                                    currentUserData.profilePictureURL,
+                                audio: currentUserData.audioUploads![index],
+                                url: state.uploadedContentUrl[index],
+                              );
+                            },
+                          );
+                  },
+                ),
               const SizedBox(
                 height: 10,
               ),

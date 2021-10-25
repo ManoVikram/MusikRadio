@@ -6,7 +6,7 @@ class UserData {
   const UserData({required this.userEmail});
 }
 
-abstract class SignInUserState {
+abstract class SignInUserState extends Equatable {
   const SignInUserState();
 
   @override

@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../models/ModelProvider.dart';
+
 class AudioCard extends StatelessWidget {
-  const AudioCard({
+  final String channelName;
+  final Audio audio;
+  final Map<String, String> url;
+  String? profilePictureUrl;
+
+  AudioCard({
     Key? key,
+    required this.channelName,
+    required this.audio,
+    required this.url,
+    this.profilePictureUrl,
   }) : super(key: key);
 
   @override
@@ -30,11 +41,17 @@ class AudioCard extends StatelessWidget {
             Expanded(
               flex: 7,
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
+                  ),
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      url["thumbnailURL"]!,
+                    ),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -57,15 +74,19 @@ class AudioCard extends StatelessWidget {
                     Container(
                       height: 50,
                       width: 50,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          // If the user haven't set any image, show a default image here
-                          // Use eitther the AssetImage or NetworkImage for the default one
-                          image: NetworkImage(""),
-                          fit: BoxFit.cover,
-                        ),
+                        image: profilePictureUrl == null
+                            ? const DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/DefaultProfilePicture.jpg"),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(profilePictureUrl!),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -77,10 +98,10 @@ class AudioCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "TITLE",
+                            audio.title,
                             style: TextStyle(
                               fontFamily: GoogleFonts.roboto().fontFamily,
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -91,7 +112,7 @@ class AudioCard extends StatelessWidget {
                             height: 7,
                           ),
                           Text(
-                            "Channel Name",
+                            channelName,
                             style: TextStyle(
                               fontFamily: GoogleFonts.openSans().fontFamily,
                               fontSize: 14,

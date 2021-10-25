@@ -1,6 +1,6 @@
 part of './reset_new_password_bloc.dart';
 
-abstract class ResetNewPasswordState {
+abstract class ResetNewPasswordState extends Equatable {
   const ResetNewPasswordState();
 
   @override

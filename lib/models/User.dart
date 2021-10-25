@@ -32,9 +32,10 @@ class User extends Model {
   final String? _description;
   final bool? _isCreator;
   final List<UserAudio>? _liked;
-  final Creator? _creator;
   final List<String>? _following;
   final List<String>? _followers;
+  final String? _profilePictureKey;
+  final List<Audio>? _audioUploads;
 
   @override
   getInstanceType() => classType;
@@ -80,10 +81,6 @@ class User extends Model {
     return _liked;
   }
   
-  Creator? get creator {
-    return _creator;
-  }
-  
   List<String>? get following {
     return _following;
   }
@@ -92,9 +89,17 @@ class User extends Model {
     return _followers;
   }
   
-  const User._internal({required this.id, required createdOn, required email, name, description, required isCreator, liked, creator, following, followers}): _createdOn = createdOn, _email = email, _name = name, _description = description, _isCreator = isCreator, _liked = liked, _creator = creator, _following = following, _followers = followers;
+  String? get profilePictureKey {
+    return _profilePictureKey;
+  }
   
-  factory User({String? id, required TemporalDateTime createdOn, required String email, String? name, String? description, required bool isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers}) {
+  List<Audio>? get audioUploads {
+    return _audioUploads;
+  }
+  
+  const User._internal({required this.id, required createdOn, required email, name, description, required isCreator, liked, following, followers, profilePictureKey, audioUploads}): _createdOn = createdOn, _email = email, _name = name, _description = description, _isCreator = isCreator, _liked = liked, _following = following, _followers = followers, _profilePictureKey = profilePictureKey, _audioUploads = audioUploads;
+  
+  factory User({String? id, required TemporalDateTime createdOn, required String email, String? name, String? description, required bool isCreator, List<UserAudio>? liked, List<String>? following, List<String>? followers, String? profilePictureKey, List<Audio>? audioUploads}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
       createdOn: createdOn,
@@ -103,9 +108,10 @@ class User extends Model {
       description: description,
       isCreator: isCreator,
       liked: liked != null ? List<UserAudio>.unmodifiable(liked) : liked,
-      creator: creator,
       following: following != null ? List<String>.unmodifiable(following) : following,
-      followers: followers != null ? List<String>.unmodifiable(followers) : followers);
+      followers: followers != null ? List<String>.unmodifiable(followers) : followers,
+      profilePictureKey: profilePictureKey,
+      audioUploads: audioUploads != null ? List<Audio>.unmodifiable(audioUploads) : audioUploads);
   }
   
   bool equals(Object other) {
@@ -123,9 +129,10 @@ class User extends Model {
       _description == other._description &&
       _isCreator == other._isCreator &&
       DeepCollectionEquality().equals(_liked, other._liked) &&
-      _creator == other._creator &&
       DeepCollectionEquality().equals(_following, other._following) &&
-      DeepCollectionEquality().equals(_followers, other._followers);
+      DeepCollectionEquality().equals(_followers, other._followers) &&
+      _profilePictureKey == other._profilePictureKey &&
+      DeepCollectionEquality().equals(_audioUploads, other._audioUploads);
   }
   
   @override
@@ -142,15 +149,15 @@ class User extends Model {
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("description=" + "$_description" + ", ");
     buffer.write("isCreator=" + (_isCreator != null ? _isCreator!.toString() : "null") + ", ");
-    buffer.write("creator=" + (_creator != null ? _creator!.toString() : "null") + ", ");
     buffer.write("following=" + (_following != null ? _following!.toString() : "null") + ", ");
-    buffer.write("followers=" + (_followers != null ? _followers!.toString() : "null"));
+    buffer.write("followers=" + (_followers != null ? _followers!.toString() : "null") + ", ");
+    buffer.write("profilePictureKey=" + "$_profilePictureKey");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  User copyWith({String? id, TemporalDateTime? createdOn, String? email, String? name, String? description, bool? isCreator, List<UserAudio>? liked, Creator? creator, List<String>? following, List<String>? followers}) {
+  User copyWith({String? id, TemporalDateTime? createdOn, String? email, String? name, String? description, bool? isCreator, List<UserAudio>? liked, List<String>? following, List<String>? followers, String? profilePictureKey, List<Audio>? audioUploads}) {
     return User(
       id: id ?? this.id,
       createdOn: createdOn ?? this.createdOn,
@@ -159,9 +166,10 @@ class User extends Model {
       description: description ?? this.description,
       isCreator: isCreator ?? this.isCreator,
       liked: liked ?? this.liked,
-      creator: creator ?? this.creator,
       following: following ?? this.following,
-      followers: followers ?? this.followers);
+      followers: followers ?? this.followers,
+      profilePictureKey: profilePictureKey ?? this.profilePictureKey,
+      audioUploads: audioUploads ?? this.audioUploads);
   }
   
   User.fromJson(Map<String, dynamic> json)  
@@ -177,14 +185,18 @@ class User extends Model {
           .map((e) => UserAudio.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _creator = json['creator']?['serializedData'] != null
-        ? Creator.fromJson(new Map<String, dynamic>.from(json['creator']['serializedData']))
-        : null,
       _following = json['following']?.cast<String>(),
-      _followers = json['followers']?.cast<String>();
+      _followers = json['followers']?.cast<String>(),
+      _profilePictureKey = json['profilePictureKey'],
+      _audioUploads = json['audioUploads'] is List
+        ? (json['audioUploads'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Audio.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'createdOn': _createdOn?.format(), 'email': _email, 'name': _name, 'description': _description, 'isCreator': _isCreator, 'liked': _liked?.map((e) => e?.toJson())?.toList(), 'creator': _creator?.toJson(), 'following': _following, 'followers': _followers
+    'id': id, 'createdOn': _createdOn?.format(), 'email': _email, 'name': _name, 'description': _description, 'isCreator': _isCreator, 'liked': _liked?.map((e) => e?.toJson())?.toList(), 'following': _following, 'followers': _followers, 'profilePictureKey': _profilePictureKey, 'audioUploads': _audioUploads?.map((e) => e?.toJson())?.toList()
   };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
@@ -196,11 +208,12 @@ class User extends Model {
   static final QueryField LIKED = QueryField(
     fieldName: "liked",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (UserAudio).toString()));
-  static final QueryField CREATOR = QueryField(
-    fieldName: "creator",
-    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Creator).toString()));
   static final QueryField FOLLOWING = QueryField(fieldName: "following");
   static final QueryField FOLLOWERS = QueryField(fieldName: "followers");
+  static final QueryField PROFILEPICTUREKEY = QueryField(fieldName: "profilePictureKey");
+  static final QueryField AUDIOUPLOADS = QueryField(
+    fieldName: "audioUploads",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Audio).toString()));
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "User";
     modelSchemaDefinition.pluralName = "Users";
@@ -255,13 +268,6 @@ class User extends Model {
       associatedKey: UserAudio.USER
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
-      key: User.CREATOR,
-      isRequired: false,
-      targetName: "userCreatorId",
-      ofModelName: (Creator).toString()
-    ));
-    
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: User.FOLLOWING,
       isRequired: false,
@@ -274,6 +280,19 @@ class User extends Model {
       isRequired: false,
       isArray: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.collection, ofModelName: describeEnum(ModelFieldTypeEnum.string))
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.PROFILEPICTUREKEY,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: User.AUDIOUPLOADS,
+      isRequired: false,
+      ofModelName: (Audio).toString(),
+      associatedKey: Audio.USERID
     ));
   });
 }

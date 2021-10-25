@@ -43,13 +43,13 @@ class CategoryButton extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              width: 10,
+              width: 7,
             ),
             Text(
               text,
               style: TextStyle(
                 fontFamily: GoogleFonts.poppins().fontFamily,
-                fontSize: 18,
+                fontSize: 16,
                 color: isSelected ? Colors.white : Colors.blueGrey,
               ),
             ),

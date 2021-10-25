@@ -17,20 +17,20 @@
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
 import 'Audio.dart';
-import 'Creator.dart';
+import 'AudioCategory.dart';
 import 'User.dart';
 import 'UserAudio.dart';
 
 export 'Audio.dart';
-export 'Creator.dart';
+export 'AudioCategory.dart';
 export 'User.dart';
 export 'UserAudio.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "7b237b575669ad87c05d3f955a9c78bc";
+  String version = "3f6214b65b104aa98b3abd8bef771a30";
   @override
-  List<ModelSchema> modelSchemas = [Audio.schema, Creator.schema, User.schema, UserAudio.schema];
+  List<ModelSchema> modelSchemas = [Audio.schema, AudioCategory.schema, User.schema, UserAudio.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
@@ -41,8 +41,8 @@ class ModelProvider implements ModelProviderInterface {
     return Audio.classType;
     }
     break;
-    case "Creator": {
-    return Creator.classType;
+    case "AudioCategory": {
+    return AudioCategory.classType;
     }
     break;
     case "User": {
