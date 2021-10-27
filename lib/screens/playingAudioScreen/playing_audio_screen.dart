@@ -15,6 +15,10 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    // "title", "channelName", "audioURL", "thumbnailURL", "profilePictureURL"
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -66,15 +70,14 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-
                 Container(
                   height: size.width * 0.7,
                   width: size.width * 0.7,
                   decoration: BoxDecoration(
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(20),
-                    image: const DecorationImage(
-                      image: NetworkImage(""),
+                    image: DecorationImage(
+                      image: NetworkImage(args["thumbnailURL"]),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -84,7 +87,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                   height: 20,
                 ),
                 Text(
-                  "TITLE",
+                  args["title"],
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
@@ -131,11 +134,11 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       Container(
                         height: 40,
                         width: 40,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.grey,
                           image: DecorationImage(
-                            image: NetworkImage(""),
+                            image: NetworkImage(args["profilePictureURL"]),
                           ),
                         ),
                       ),
@@ -144,7 +147,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          "Channel Name",
+                          args["channelName"],
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontFamily: GoogleFonts.poppins().fontFamily,

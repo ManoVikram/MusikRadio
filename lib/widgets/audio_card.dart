@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../screens/playingAudioScreen/playing_audio_screen.dart';
+
 import '../models/ModelProvider.dart';
 
 class AudioCard extends StatelessWidget {
@@ -22,7 +24,18 @@ class AudioCard extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          PlayingAudioScreen.routeName,
+          arguments: {
+            "title": audio.title,
+            "channelName": channelName,
+            "audioURL": url["audioURL"],
+            "thumbnailURL": url["thumbnailURL"],
+            "profilePictureURL": profilePictureUrl,
+          },
+        );
+      },
       child: Container(
         // height: 280,
         height: size.height * 0.35,

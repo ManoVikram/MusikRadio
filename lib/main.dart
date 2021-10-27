@@ -192,11 +192,13 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
     _prefs = await SharedPreferences.getInstance();
     _seen = (_prefs?.getBool("seen") ?? false);
 
-    BlocProvider.of<FetchAudioBloc>(context).add(const FetchAllAudio());
+    // BlocProvider.of<FetchAudioBloc>(context).add(const FetchAllAudio());
   }
 
   Future<bool> _fetchSession() async {
     // final currentUserDataProvider = context.watch<CurrentUserData>();
+    // context.read<FetchAudioBloc>().add(const FetchAllAudio());
+
     try {
       AuthSession res = await Amplify.Auth.fetchAuthSession(
         options: CognitoSessionOptions(getAWSCredentials: true),
@@ -266,6 +268,7 @@ class _AudioAppState extends State<AudioApp> with AfterLayoutMixin<AudioApp> {
                       ConnectionState.done) {
                     if (sessionSnapshot.hasData &&
                         sessionSnapshot.data == true) {
+                      context.read<FetchAudioBloc>().add(const FetchAllAudio());
                       return const HomeScreen();
                     } else if (sessionSnapshot.hasData &&
                         sessionSnapshot.data == false) {
