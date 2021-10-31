@@ -1,5 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+
+import '../../models/audioPlayerManager/audio_player_manager.dart';
+
+class DurationState {
+  final Duration current;
+  final Duration buffered;
+  final Duration total;
+
+  DurationState({
+    required this.current,
+    required this.buffered,
+    required this.total,
+  });
+}
 
 class PlayingAudioScreen extends StatefulWidget {
   const PlayingAudioScreen({Key? key}) : super(key: key);
@@ -18,6 +33,16 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     // "title", "channelName", "audioURL", "thumbnailURL", "profilePictureURL"
+
+    final AudioPlayerManager _audioPlayerManager =
+        AudioPlayerManager(url: args["audioURL"]);
+
+    bool isRepeatOn = false;
+
+    @override
+    void dispose() {
+      _audioPlayerManager.dispose();
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -163,7 +188,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                   height: 20,
                 ),
                 // Change the slider value according to the audio elapsed
-                Slider(
+                /* Slider(
                   value: 18,
                   min: 0,
                   max: 100,
@@ -180,6 +205,45 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                     Text("00:00"),
                     Text("01:00"),
                   ],
+                ), */
+                /* StreamBuilder<DurationState>(
+                  stream: null,
+                  builder: (context, snapshot) {
+                    return ProgressBar(
+                      progress: const Duration(milliseconds: 1000),
+                      buffered: const Duration(milliseconds: 2000),
+                      total: const Duration(milliseconds: 5000),
+                      progressBarColor: Colors.indigo,
+                      baseBarColor: Colors.white.withOpacity(0.24),
+                      bufferedBarColor: Colors.white.withOpacity(0.24),
+                      thumbColor: Colors.greenAccent[400],
+                      barHeight: 3.0,
+                      thumbRadius: 5.0,
+                      onSeek: (duration) {
+                        _player.seek(duration);
+                      },
+                    );
+                  },
+                ), */
+                ValueListenableBuilder<ProgressBarState>(
+                  valueListenable: _audioPlayerManager.progressNotifier,
+                  builder: (_, value, __) {
+                    return ProgressBar(
+                      progress: value.current,
+                      buffered: value.buffered,
+                      total: value.total,
+                      progressBarColor: Colors.indigo,
+                      baseBarColor: Colors.white.withOpacity(0.24),
+                      bufferedBarColor: Colors.white.withOpacity(0.24),
+                      thumbColor: Colors.greenAccent[400],
+                      barHeight: 3.0,
+                      thumbRadius: 5.0,
+                      onSeek: _audioPlayerManager.seek,
+                      /* onSeek: (duration) {
+                        _player.seek(duration);
+                      }, */
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -188,11 +252,20 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.repeat),
+                      onPressed: () {
+                        setState(() {
+                          isRepeatOn = !isRepeatOn;
+                          _audioPlayerManager.toggleRepeat();
+                        });
+                      },
+                      icon: isRepeatOn
+                          ? const Icon(Icons.repeat_one)
+                          : const Icon(Icons.repeat),
                       padding: const EdgeInsets.all(0),
                       iconSize: 30,
-                      color: Colors.blueGrey[800],
+                      color: isRepeatOn
+                          ? Colors.greenAccent[400]
+                          : Colors.blueGrey[800],
                     ),
                     IconButton(
                       onPressed: () {},
@@ -201,12 +274,42 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       iconSize: 48,
                       color: Colors.blueGrey[800],
                     ),
-                    IconButton(
+                    /* IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.pause_circle_filled),
                       padding: const EdgeInsets.all(0),
                       iconSize: 72,
                       color: Colors.blueGrey[800],
+                    ), */
+                    ValueListenableBuilder<ButtonState>(
+                      valueListenable: _audioPlayerManager.buttonNotifier,
+                      builder: (_, value, __) {
+                        switch (value) {
+                          case ButtonState.loading:
+                            return Container(
+                              margin: const EdgeInsets.all(8.0),
+                              width: 62.0,
+                              height: 62.0,
+                              child: const CircularProgressIndicator(),
+                            );
+                          case ButtonState.paused:
+                            return IconButton(
+                              onPressed: _audioPlayerManager.play,
+                              icon: const Icon(Icons.play_circle_filled),
+                              padding: const EdgeInsets.all(0),
+                              iconSize: 72,
+                              color: Colors.blueGrey[800],
+                            );
+                          case ButtonState.playing:
+                            return IconButton(
+                              onPressed: _audioPlayerManager.pause,
+                              icon: const Icon(Icons.pause_circle_filled),
+                              padding: const EdgeInsets.all(0),
+                              iconSize: 72,
+                              color: Colors.blueGrey[800],
+                            );
+                        }
+                      },
                     ),
                     IconButton(
                       onPressed: () {},
