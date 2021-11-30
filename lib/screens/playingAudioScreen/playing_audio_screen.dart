@@ -26,6 +26,17 @@ class PlayingAudioScreen extends StatefulWidget {
 }
 
 class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
+  bool isRepeatOn = false;
+  double volumeValue = 100;
+
+  AudioPlayerManager? _audioPlayerManager;
+
+  @override
+  void dispose() {
+    _audioPlayerManager?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -34,15 +45,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     // "title", "channelName", "audioURL", "thumbnailURL", "profilePictureURL"
 
-    final AudioPlayerManager _audioPlayerManager =
-        AudioPlayerManager(url: args["audioURL"]);
-
-    bool isRepeatOn = false;
-
-    @override
-    void dispose() {
-      _audioPlayerManager.dispose();
-    }
+    _audioPlayerManager = AudioPlayerManager(url: args["audioURL"]);
 
     return Scaffold(
       body: SafeArea(
@@ -226,7 +229,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                   },
                 ), */
                 ValueListenableBuilder<ProgressBarState>(
-                  valueListenable: _audioPlayerManager.progressNotifier,
+                  valueListenable: _audioPlayerManager!.progressNotifier,
                   builder: (_, value, __) {
                     return ProgressBar(
                       progress: value.current,
@@ -238,7 +241,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       thumbColor: Colors.greenAccent[400],
                       barHeight: 3.0,
                       thumbRadius: 5.0,
-                      onSeek: _audioPlayerManager.seek,
+                      onSeek: _audioPlayerManager?.seek,
                       /* onSeek: (duration) {
                         _player.seek(duration);
                       }, */
@@ -255,7 +258,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       onPressed: () {
                         setState(() {
                           isRepeatOn = !isRepeatOn;
-                          _audioPlayerManager.toggleRepeat();
+                          _audioPlayerManager?.toggleRepeat();
                         });
                       },
                       icon: isRepeatOn
@@ -268,12 +271,48 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                           : Colors.blueGrey[800],
                     ),
                     IconButton(
+                      onPressed: _audioPlayerManager?.goBackward5Sec,
+                      icon: const Icon(Icons.replay_5),
+                      padding: const EdgeInsets.all(0),
+                      iconSize: 48,
+                      color: Colors.blueGrey[800],
+                    ),
+                    /* IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SimpleDialog(
+                            title: const Text("Volume"),
+                            children: [
+                              SimpleDialogOption(
+                                child: Slider(
+                                  value: volumeValue,
+                                  min: 0,
+                                  max: 100,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      volumeValue = newValue;
+                                      _audioPlayerManager.volume(volumeValue);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.volume_up_rounded),
+                      padding: const EdgeInsets.all(0),
+                      iconSize: 48,
+                      color: Colors.blueGrey[800],
+                    ), */
+                    /* IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.skip_previous),
                       padding: const EdgeInsets.all(0),
                       iconSize: 48,
                       color: Colors.blueGrey[800],
-                    ),
+                    ), */
                     /* IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.pause_circle_filled),
@@ -282,7 +321,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       color: Colors.blueGrey[800],
                     ), */
                     ValueListenableBuilder<ButtonState>(
-                      valueListenable: _audioPlayerManager.buttonNotifier,
+                      valueListenable: _audioPlayerManager!.buttonNotifier,
                       builder: (_, value, __) {
                         switch (value) {
                           case ButtonState.loading:
@@ -294,7 +333,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                             );
                           case ButtonState.paused:
                             return IconButton(
-                              onPressed: _audioPlayerManager.play,
+                              onPressed: _audioPlayerManager?.play,
                               icon: const Icon(Icons.play_circle_filled),
                               padding: const EdgeInsets.all(0),
                               iconSize: 72,
@@ -302,7 +341,7 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                             );
                           case ButtonState.playing:
                             return IconButton(
-                              onPressed: _audioPlayerManager.pause,
+                              onPressed: _audioPlayerManager?.pause,
                               icon: const Icon(Icons.pause_circle_filled),
                               padding: const EdgeInsets.all(0),
                               iconSize: 72,
@@ -312,8 +351,8 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       },
                     ),
                     IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.skip_next),
+                      onPressed: _audioPlayerManager?.goForward5Sec,
+                      icon: const Icon(Icons.forward_5),
                       padding: const EdgeInsets.all(0),
                       iconSize: 48,
                       color: Colors.blueGrey[800],

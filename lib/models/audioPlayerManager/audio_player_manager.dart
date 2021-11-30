@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -97,27 +99,48 @@ class AudioPlayerManager {
     });
   }
 
-  void play() {
-    _audioPlayer.play();
+  void play() async {
+    await _audioPlayer.play();
   }
 
-  void pause() {
-    _audioPlayer.pause();
+  void pause() async {
+    await _audioPlayer.pause();
   }
 
-  void toggleRepeat() {
+  void toggleRepeat() async {
     if (_audioPlayer.loopMode == LoopMode.one) {
-      _audioPlayer.setLoopMode(LoopMode.one);
+      await _audioPlayer.setLoopMode(LoopMode.one);
     } else {
-      _audioPlayer.setLoopMode(LoopMode.off);
+      await _audioPlayer.setLoopMode(LoopMode.off);
     }
   }
 
-  void seek(Duration position) {
-    _audioPlayer.seek(position);
+  void volume(double value) async {
+    await _audioPlayer.setVolume(value);
   }
 
-  void dispose() {
-    _audioPlayer.dispose();
+  void seek(Duration position) async {
+    await _audioPlayer.seek(position);
+  }
+
+  void dispose() async {
+    await _audioPlayer.dispose();
+  }
+
+  void goForward5Sec() async {
+    if (_audioPlayer.position.inSeconds + 5 >=
+        _audioPlayer.duration!.inSeconds) {
+      _audioPlayer.seek(_audioPlayer.duration);
+    } else {
+      _audioPlayer.seek(Duration(seconds: _audioPlayer.position.inSeconds + 5));
+    }
+  }
+
+  void goBackward5Sec() async {
+    if (_audioPlayer.position.inSeconds - 5 <= 0) {
+      _audioPlayer.seek(const Duration(seconds: 0));
+    } else {
+      _audioPlayer.seek(Duration(seconds: _audioPlayer.position.inSeconds - 5));
+    }
   }
 }
