@@ -98,14 +98,15 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.home),
             label: "Home",
           ),
-          BottomNavigationBarItem(
+          // * I might uncomment the below 2 BottomNavigationBarItem after implementing the features
+          /* BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: "Search",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu),
             label: "Subscriptions",
-          ),
+          ), */
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: "Account",

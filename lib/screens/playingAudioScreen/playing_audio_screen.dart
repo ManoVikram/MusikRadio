@@ -357,13 +357,15 @@ class _PlayingAudioScreenState extends State<PlayingAudioScreen> {
                       iconSize: 48,
                       color: Colors.blueGrey[800],
                     ),
-                    IconButton(
+                    const Text("🎧"),
+                    // ! Like Button
+                    /* IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.favorite_border),
                       padding: const EdgeInsets.all(0),
                       iconSize: 30,
                       color: Colors.blueGrey[800],
-                    ),
+                    ), */
                   ],
                 ),
                 const SizedBox(
